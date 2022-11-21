@@ -1,0 +1,55 @@
+/*隐藏导航栏下拉图标*/
+.el-submenu.is-opened > .el-submenu__title .el-submenu__icon-arrow {
+    display: none;
+}
+
+.el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
+    display: none;
+}
+/*隐藏导航栏下拉图标end*/
+
+/* 隐藏导航栏下划线 */
+.el-submenu > .el-submenu__title .el-submenu__icon-arrow {
+    border-bottom: none;
+}
+.el-menu--horizontal > .el-menu-item.is-active {
+    border-bottom: none;
+}
+.el-menu--horizontal > .el-submenu .el-submenu__title {
+    border-bottom: none;
+}
+
+.el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
+    border-bottom: none;
+}
+.el-menu--horizontal > .el-menu-item {
+    border-bottom: none;
+}
+
+.el-menu.el-menu--horizontal {
+    border-bottom: none;
+}
+/*隐藏导航栏下划线*/
+
+/*下拉导航栏*/
+.el-submenu__title > {
+    padding: 0 8px;
+}
+
+/*普通导航栏*/
+.el-menu-item {
+    padding: 0 8px;
+}
+
+.el-menu-item-padding-left {
+    padding-left: 80px;
+}
+
+.el-menu-item .el-input {
+    width: 200px;
+}
+
+/*搜索输入框*/
+.input-with-select .el-input-group__prepend {
+    background-color: #fff;
+}

@@ -1,250 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>首页</title>
+    <title>MANNING - 首页</title>
     <script th:src="@{js/jquery.js}"></script>
     <script th:src="@{js/vue.js}"></script>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" th:href="@{element-ui/theme-chalk/index.css}">
+<!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+<!--    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <script th:src="@{element-ui/index.js}"></script>
     <link rel="stylesheet" th:href="@{css/container.css}">
+    <link rel="stylesheet" th:href="@{css/header.css}">
+    <link rel="stylesheet" th:href="@{css/index.css}">
     <style>
-        body {
-            padding: 0;
-            margin: 0;
-            font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-        }
-
-        /*布局*/
-        .el-row {
-            margin-bottom: 0;
-
-        &
-        :last-child {
-            margin-bottom: 0;
-        }
-
-        }
-        .el-col {
-            border-radius: 4px;
-        }
-
-        .bg-purple-dark {
-            background: #99a9bf;
-        }
-
-        .bg-purple {
-            background: #d3dce6;
-        }
-
-        .bg-purple-light {
-            background: #e5e9f2;
-        }
-
-        .grid-content {
-            border-radius: 4px;
-            min-height: 36px;
-        }
-
-        .row-bg {
-            padding: 10px 0;
-            background-color: #f9fafc;
-        }
-
-        /*隐藏导航栏下拉图标*/
-        .el-submenu.is-opened > .el-submenu__title .el-submenu__icon-arrow {
-            display: none;
-        }
-
-        .el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
-            display: none;
-        }
-
-        /* 隐藏导航栏下划线 */
-        .el-submenu > .el-submenu__title .el-submenu__icon-arrow {
-            border-bottom: none;
-        }
-
-        .el-menu--horizontal > .el-menu-item.is-active {
-            border-bottom: none;
-        }
-
-
-        .el-menu--horizontal > .el-submenu .el-submenu__title {
-            border-bottom: none;
-        }
-
-        .el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
-            border-bottom: none;
-        }
-
-        .el-menu--horizontal > .el-menu-item {
-            border-bottom: none;
-        }
-
-        /*下拉导航栏*/
-        .el-submenu__title > {
-            padding: 0 8px;
-        }
-
-        /*普通导航栏*/
-        .el-menu-item {
-            padding: 0 8px;
-        }
-
-        .el-menu-item-padding-left {
-            padding-left: 80px;
-        }
-
-
-        .el-menu-item .el-input {
-            width: 100%;
-        }
-
-        /*搜索输入框*/
-        .input-with-select .el-input-group__prepend {
-            background-color: #fff;
-        }
-
-        /*走马灯*/
-        .el-carousel__item h3 {
-            color: #475669;
-            font-size: 18px;
-            opacity: 0.75;
-            line-height: 300px;
-            margin: 0;
-        }
-
-        .el-carousel__item:nth-child(2n) {
-            background-color: #99a9bf;
-        }
-
-        .el-carousel__item:nth-child(2n+1) {
-            background-color: #d3dce6;
-        }
-
-
-
-        .goods-more-tab{
-            padding: 10px;
-
-        }
-
-        .goods-more-tab .tab-title{
-            font-size: 16px;
+        .goods-sub-category{
             padding: 20px 10px;
-
-        }
-
-        .goods-more-tab .tab-subtitle{
-            font-size: 10px;
-        }
-
-        #app{
-            width: 1200px;
-            margin: 0 auto;
+            text-align: left;
         }
     </style>
 </head>
 <body>
 <div id="app">
     <el-container>
-        <el-header>
-            <el-row>
-                <el-col :span=10>
-                    <div class="grid-content bg-purple">
-                        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
-                                 @select="handleSelect">
-                            <el-menu-item index="1">
-                                <img src="img/manningLogoBlack.svg"/>
-                            </el-menu-item>
-                            <el-menu-item index="2">
-                                <span>MANNING</span>
-                            </el-menu-item>
-                        </el-menu>
-                    </div>
-                </el-col>
-                <el-col :span="14">
-                    <div class="grid-content bg-purple">
-                        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
-                                 @select="handleSelect">
-                            <el-menu-item index="3">
-                                <el-input size="small" placeholder="search for and inside goods..."
-                                          v-model="search_input"
-                                          class="input-with-select">
-                                    <el-button slot="append" icon="el-icon-search"></el-button>
-                                </el-input>
-                            </el-menu-item>
+<!-- 头部导航栏 -->
+        <div th:replace="~{header :: copy}"></div>
+<!-- 头部导航栏end -->
 
-                            <el-submenu index="4">
-                                <template slot="title">
-                                    <i class="el-icon-goods"></i>
-                                    <span>浏览</span>
-                                </template>
-                                <el-menu-item index="4-1">手机数码</el-menu-item>
-                                <el-menu-item index="4-2">游戏交易</el-menu-item>
-                                <el-menu-item index="4-3">生活百货</el-menu-item>
-                                <el-menu-item index="4-4">技能服务</el-menu-item>
-                            </el-submenu>
-                            <el-menu-item index="5" class="el-menu-item-padding-left">
-                                <template slot="title">
-                                    <i class="el-icon-shopping-cart-1"></i>
-                                    <span>购物车</span>
-                                </template>
-                            </el-menu-item>
-                            <el-menu-item index="6" th:v-if="${user == null}">
-                                <template slot="title">
-                                    <i class="el-icon-user"></i>
-                                    <el-link :underline="false" th:href="@{login.html}">登录</el-link>
-                                </template>
-                            </el-menu-item>
-
-                            <el-submenu index="7" th:v-if="${user != null}">
-                                <template slot="title">
-                                    <i class="el-icon-user"></i>
-                                    <el-link :underline="false"
-                                             th:text="*{user != null}? *{user.nickname} : '登录'"></el-link>
-                                </template>
-                                <el-menu-item index="7-1">用户信息</el-menu-item>
-                                <el-menu-item index="7-2">我的交易</el-menu-item>
-                                <el-menu-item index="7-3">我的发布</el-menu-item>
-                                <el-menu-item index="7-4">消息</el-menu-item>
-                                <el-menu-item index="7-5">退出登录</el-menu-item>
-                                <el-menu-item index="7-6">设置</el-menu-item>
-                            </el-submenu>
-                        </el-menu>
-                    </div>
-                </el-col>
-            </el-row>
-        </el-header>
         <el-main>
             <el-row type="flex" class="row-bg" justify="space-between">
+
+<!-- 左侧分类 -->
                 <el-col :span="6">
-<!-- 分类 -->
                     <el-card class="box-card">
-
-
+<!-- 手机数码 -->
                         <el-popover
                                 placement="right-start"
                                 width="450"
-                                trigger="click">
+                                trigger="hover">
                             <div class="goods-more-tab">
                                 <el-link :underline="false" href="https://element.eleme.io">
                                     <span class="tab-title">更多分类</span>
                                 </el-link>
-<!--                                <template th:each="prod : ${prods}">-->
-<!--                                    <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">手机</el-link>-->
-<!--                                    <el-divider direction="vertical"></el-divider>-->
-<!--                                </template>-->
-                                <template v-for="item in subcategors">
-                                    <el-link class="tab-subtitle" :underline="false" v-bind:href="['/scid/' + item.scid]">{{item.sc_name}}</el-link>
-                                    <el-divider direction="vertical"></el-divider>
-                                </template>
-
-
-<!--                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">手机</el-link>-->
-<!--                                <el-divider direction="vertical"></el-divider>-->
-<!--                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">手机配件</el-link>-->
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{cid/101}">手机通讯</el-link>
+                                <el-divider direction="vertical"></el-divider>
+                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">数码配件</el-link>
+                                <el-divider direction="vertical"></el-divider>
+                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">智能设备</el-link>
+                                <el-divider direction="vertical"></el-divider>
+                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">影音娱乐</el-link>
                             </div>
                             <div class="goods-more-tab">
                                 <el-link href="https://element.eleme.io" :underline="false">
@@ -263,11 +66,10 @@
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io" target="_blank">OPPO</el-link>
                             </div>
 
-                            <div slot="reference" style="text-align: left;" @click="test(sjsm)">
-                                <el-link class="tab-title" style="display: block;" :underline="false">手机数码</el-link>
+                            <div slot="reference" style="text-align: left;">
+                                <el-link class="tab-title" :underline="false">手机数码</el-link>
                             </div>
-                            <div slot="reference" style="padding: 20px 10px;text-align: left;">
-
+                            <div class="goods-sub-category" slot="reference">
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">Apple</el-link>
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">华为</el-link>
@@ -275,10 +77,9 @@
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">三星</el-link>
                             </div>
                         </el-popover>
-<!-- 分类：手机通讯END -->
-
+<!-- 手机数码end -->
                         <el-divider></el-divider>
-
+<!-- 游戏装备 -->
                         <el-popover
                                 placement="right-start"
                                 width="450"
@@ -291,7 +92,6 @@
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">游戏配件</el-link>
                             </div>
-
                             <div class="goods-more-tab">
                                 <el-link href="https://element.eleme.io" :underline="false">
                                     <span class="tab-title">更多品牌</span>
@@ -302,9 +102,8 @@
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">索尼</el-link>
                             </div>
-
-                            <div id="test" slot="reference" style="padding: 10px;text-align: left;">
-                                <el-link class="tab-title" style="display: block;" :underline="false">游戏装备</el-link><br>
+                            <div class="goods-sub-category" slot="reference">
+                                <el-link class="tab-title" :underline="false">游戏装备</el-link><br>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">Switch游戏</el-link>
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">PS4游戏</el-link>
@@ -312,9 +111,9 @@
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">游戏手柄</el-link>
                             </div>
                         </el-popover>
-<!-- 分类：游戏装备END -->
+<!-- 游戏装备end -->
                         <el-divider></el-divider>
-
+<!-- 生活百货 -->
                         <el-popover
                                 placement="right-start"
                                 width="450"
@@ -329,7 +128,6 @@
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子书</el-link>
                             </div>
-
                             <div class="goods-more-tab">
                                 <el-link href="https://element.eleme.io" :underline="false">
                                     <span class="tab-title">更多分类</span>
@@ -342,9 +140,8 @@
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">办公设备</el-link>
                             </div>
-
-                            <div slot="reference" style="padding: 10px;text-align: left;">
-                                <el-link class="tab-title" style="display: block;" :underline="false">生活百货</el-link><br>
+                            <div class="goods-sub-category" slot="reference">
+                                <el-link class="tab-title" :underline="false">生活百货</el-link><br>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">打印机</el-link>
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子书</el-link>
@@ -352,10 +149,9 @@
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子门锁</el-link>
                             </div>
                         </el-popover>
-<!-- 分类：生活百货END -->
-
+<!-- 生活百货 -->
                         <el-divider></el-divider>
-
+<!-- 技能服务 -->
                         <el-popover
                                 placement="right-start"
                                 width="450"
@@ -374,8 +170,8 @@
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">绘画书法</el-link>
                             </div>
 
-                            <div slot="reference" style="padding: 10px;text-align: left;">
-                                <el-link class="tab-title" style="display: block;" :underline="false">技能服务</el-link><br>
+                            <div class="goods-sub-category" slot="reference">
+                                <el-link class="tab-title" :underline="false">技能服务</el-link><br>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">兼职家教</el-link>
                                 <el-divider direction="vertical"></el-divider>
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">IT服务</el-link>
@@ -383,12 +179,15 @@
                                 <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">跑腿代办</el-link>
                             </div>
                         </el-popover>
-<!-- 分类：技能服务END -->
+<!-- 技能服务end -->
 
                     </el-card>
+
                 </el-col>
+<!-- 左侧分类end -->
+
                 <el-col :span="11">
-<!-- 走马灯 -->
+                    <!-- 走马灯 -->
                     <div class="grid-content bg-purple-light">
                         <template>
                             <el-carousel indicator-position="outside">
@@ -400,45 +199,86 @@
                             </el-carousel>
                         </template>
                     </div>
+                    <!-- 走马灯end -->
+
                     <el-row type="flex" class="row-bg" justify="space-between">
                         <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
                         <el-col :span="8"><div class="grid-content bg-purple-light"></div></el-col>
                         <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
                     </el-row>
+
                 </el-col>
+
+                <!-- 热搜排行榜 -->
                 <el-col :span="6">
                     <div class="grid-content">
-                        <span style="font-size: 18px;font-weight: bold;justify-items: center">热搜排行榜</span>
+                        <span class="heat-search">热搜排行榜</span>
                     </div>
                 </el-col>
+                <!-- 热搜排行榜end -->
+
             </el-row>
 
-<!-- 限时秒杀 -->
+
+<!-- 每日疯抢 -->
             <el-image
-                    src="https://img12.360buyimg.com/aotucms/jfs/t1/192196/37/19256/10194/611f5035Eb1fecc8e/2adc957de36146fd.jpg"
+                    src="img/f9058ee4880180e3.jpg"
                     fit="contain"></el-image>
             <el-row type="flex" class="row-bg" justify="space-between">
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+                <template v-for="(item, index) in dayGoods">
+                    <el-col :span="4"><div class="grid-content">
+                        <el-card  :body-style="{ padding: '0px' }">
+                            <img class="image" v-bind:src="['/img/' + item.cover + '.jpg']">
+                            <div class="card-goods">
+                                <p class="card-goods-name" >{{item.name}}</p>
+                                <p class="card-goods-price">￥ {{item.price}}</p>
+                            </div>
+                        </el-card>
+                    </div></el-col>
+                </template>
             </el-row>
+<!-- 每日疯抢end -->
 
-<!-- 最新发布 -->
+<!-- 精选活动 -->
             <el-image
-                    src="https://img30.360buyimg.com/aotucms/jfs/t1/198312/26/4099/9189/611f5255E9aa7bfcc/d5e74f154126a9a1.jpg"
+                    src="img/c2063a7482c19388.jpg"
+                    fit="contain"></el-image>
+            <el-row type="flex" class="row-bg" justify="space-between">
+                <template v-for="item in eventGoods">
+                    <el-col :span="4"><div class="grid-content">
+                        <el-card  :body-style="{ padding: '0px' }">
+                            <img class="image" v-bind:src="['/img/' + item.cover + '.jpg']">
+                            <div class="card-goods">
+                                <p class="card-goods-name">{{item.name}}</p>
+                                <p class="card-goods-price">￥ {{item.price}}</p>
+                            </div>
+                        </el-card>
+                    </div></el-col>
+                </template>
+            </el-row>
+<!-- 精选活动end -->
+
+<!-- 猜你喜欢 -->
+            <el-image
+                    src="img/5edc2b84c2367ab8.jpg"
                     fit="contain"></el-image>
             <el-divider content-position="right">
                 <el-link href="https://element.eleme.io" target="_blank">更多</el-link>
             </el-divider>
-            <el-row type="flex" class="row-bg" justify="space-between">
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-                <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+            <el-row type="flex" class="row-bg" justify="space-between" style="flex-wrap: wrap;">
+                <template v-for="item in likeGoods">
+                    <el-col style="margin: 20px 10px" :span="4"><div class="grid-content">
+                        <el-card :body-style="{ padding: '0px' }">
+                            <img v-bind:src="['/img/' + item.cover + '.jpg']"  class="image">
+                            <div class="card-goods">
+                                <p class="card-goods-name">{{item.name}}</p>
+                                <p class="card-goods-price">￥ {{item.price}}</p>
+                            </div>
+                        </el-card>
+                    </div></el-col>
+                </template>
             </el-row>
+<!-- 猜你喜欢end -->
 
         </el-main>
         <el-footer>Footer</el-footer>
@@ -449,56 +289,51 @@
     <!--    </template>-->
 </div>
 </body>
+<script th:src="@{/js/hquery.js}"></script>
 <script>
     const app = new Vue({
         el: '#app',
         data: {
+            dayGoods:[],
+            eventGoods:[],
+            likeGoods:[],
             activeIndex: '1',
             activeIndex2: '1',
             search_input: '',
-            urls: [
-                'img/carousel_p1.png',
-                'img/carousel_p2.png',
-                'img/carousel_p3.png',
-                'img/carousel_p4.png'
-            ],
-            subcategors:[],
-            sjsm:101
+            urls: ['img/carousel_p1.png', 'img/carousel_p2.png', 'img/carousel_p3.png', 'img/carousel_p4.png']
+        },
+        computed:{
         },
         methods: {
             handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            test(vcid){
-                console.log(vcid);
-                init(vcid)
+                if(key === "7-1"){
+                    location.href = "/app/user.html";
+                }else if(key === '7-6'){
+
+                }
             }
         }
     })
 
-    function init(vcid) {
-        $.ajax({
-            url:'goods/subcategor.do',
-            data:{cid:vcid},
-            method:'post',
-            dataType: 'json',
-            success:function (ret) {
-                if (ret.status === 0){
-                    app.subcategors = ret.data;
-                }else {
-                    app.$message.error(ret.reason);
-                }
-            }
+    function initGoods() {
+        const req = {}
+        req.gscid = 1001;
+        H.form('goods/queryGoods.do',req,function (ret) {
+            app.dayGoods = ret.data;
+        })
 
+        req.gscid = 1003
+        H.form('goods/queryGoods.do',req,function (ret) {
+            app.eventGoods = ret.data;
+        })
+
+        H.form('goods/queryLikeGoods.do',null,function (ret) {
+            app.likeGoods = ret.data;
         })
     }
+    initGoods();
 
-    //init()
-
-    $("#test").hover(function (v) {
-        console.log("hhhhh")
-    })
-
-
+    // $("#test").hover(function (v) {
+    // })
 </script>
 </html>

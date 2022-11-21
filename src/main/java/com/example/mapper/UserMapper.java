@@ -1,13 +1,17 @@
 package com.example.mapper;
 
-import com.example.pojo.SsUser;
+import com.example.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface UserMapper {
-    SsUser getAnyUser();
+    List<User> getUser(@Param("id") long id);
 
-    SsUser userVerify(@Param("username") String username, @Param("password") String password);
+    User userVerify(@Param("username") String username, @Param("password") String password);
+
+    int updateUserInfo(User user);
+
+    int changeUserStatus(@Param("status") int status,@Param("id") int id);
 
 }
