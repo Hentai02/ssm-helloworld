@@ -6,7 +6,7 @@
                          @select="handleSelect">
                     <el-menu-item index="1">
                         <el-link :underline="false" href="/app/">
-                            <img src="img/manningLogoBlack.svg"/>
+                            <img src="/img/manningLogoBlack.svg"/>
                         </el-link>
                     </el-menu-item>
                     <el-menu-item index="2">
@@ -49,7 +49,7 @@
                     <el-menu-item index="6" th:v-if="${session.user == null}">
                         <template slot="title">
                             <i class="el-icon-user"></i>
-                            <el-link :underline="false" th:href="@{login.html}">登录</el-link>
+                            <el-link :underline="false" th:href="@{/app/login.html}">登录</el-link>
                         </template>
                     </el-menu-item>
 

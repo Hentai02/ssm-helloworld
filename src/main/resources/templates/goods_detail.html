@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/vue.js}"></script>
+    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+    <script th:src="@{/element-ui/index.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/container.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <style>
+        .el-descriptions__title{
+            text-align: start;
+            color: #666;
+            padding-top: 10px;
+            line-height: 28px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <el-container>
+        <el-header th:replace="~{header :: copy}">Header</el-header>
+        <el-main>
+            <el-row :gutter="20">
+                <el-col :span="10"><div class="grid-content bg-purple">
+<!--                    <img class="image" th:src="'/data/goods/' + ${goods.id} + '/cover/' + ${goods.cover} + '.jpg'">-->
+
+                    <template>
+                        <el-carousel style="height: 450px" indicator-position="outside">
+                            <el-carousel-item style="height: 450px" th:each="item : ${goodsCoverList}">
+
+<!--                                <img th:src="${item.path}" >-->
+                                <el-image
+                                        style="height: 450px"
+                                        th:src="${item.path}"
+                                        fit="cover"></el-image>
+                            </el-carousel-item>
+                        </el-carousel>
+                    </template>
+
+                </div></el-col>
+                <el-col :span="14"><div class="grid-content bg-purple">
+                    <p class="el-descriptions__title" th:text="${goods.name}"></p>
+                    <p style="text-align: start">
+                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">售 价</span>
+                        <span style="font-size: 22px;color: #e4393c;" th:text="'￥ ' + ${goods.price}"></span>
+                    </p>
+
+                    <p style="text-align: start">
+                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">配 送</span>
+                        <span style="color: #999;font-size: 13px">由 MANNING 发货, 并提供售后服务.</span>
+                    </p>
+
+                    <p style="text-align: start">
+                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">服务支持</span>
+                        <span style="color: #999;font-size: 13px">可配送全球99元免基础运费 自提</span>
+                    </p>
+
+
+
+                    <p style="text-align: start">
+                        <el-input-number v-model="count" :min="1" :max="10" label="描述文字"></el-input-number>
+                        <el-button type="danger">加入购物车</el-button>
+                    </p>
+
+                    <p style="text-align: start">
+                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">温馨提示 ·支持7天无理由退货</span>
+                    </p>
+                </div></el-col>
+            </el-row>
+
+<!--            <el-divider></el-divider>-->
+            <p></p>
+
+            <el-row>
+                <el-col :span="24"><div class="grid-content bg-purple-dark">
+                    <el-collapse v-model="activeNames">
+                        <el-collapse-item title="商品介绍" name="1">
+                            <div th:text="${goods.desc}">与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
+                        </el-collapse-item>
+                        <el-collapse-item title="评论" name="2">
+                            <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
+                            <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+                        </el-collapse-item>
+                    </el-collapse>
+                </div></el-col>
+            </el-row>
+
+        </el-main>
+        <el-footer>Footer</el-footer>
+    </el-container>
+</div>
+<!--    <p th:text="${goods.id}"></p>-->
+<!--    <p th:text="${goods.name}"></p>-->
+<!--    <p th:text="${goods.price}"></p>-->
+<!--    <p th:text="${goods.uid}"></p>-->
+<!--    <p th:text="${goods.desc}"></p>-->
+<!--    <p th:text="${goods.view}"></p>-->
+<!--    <p th:text="${goods.count}"></p>-->
+<!--    <p th:text="${goods.cover}"></p>-->
+<!--    <p th:text="${goods.gCid}"></p>-->
+<!--    <p th:text="${goods.gScid}"></p>-->
+<!--    <p th:text="${goods.isDel}"></p>-->
+<!--    <p th:text="${#dates.format(goods.createTime, 'yyyy/MM/dd HH:mm')}"></p>-->
+<!--    <p th:text="${goods.createBy}"></p>-->
+
+</body>
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            activeIndex: '1',
+            activeIndex2: '1',
+            search_input: '',
+            activeNames: ['1'],
+            count:''
+        },methods: {
+            handleSelect(key, keyPath) {
+                if(key === "7-1"){
+                    location.href = '/'
+                }else if(key === '7-6'){
+
+                }
+            }
+        }
+    })
+</script>
+</html>

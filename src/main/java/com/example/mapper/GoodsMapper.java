@@ -9,11 +9,11 @@ public interface GoodsMapper {
 
     List<Goods> queryTest();
 
-    List<Goods> queryGoods(@Param("gscid") int gscid);
+    List<Goods> queryGoods(@Param("gSubCid") int gSubCid);
 
     List<Goods> likeGoods();
 
-    List<Goods> queryAllGoods(@Param("start") int start,@Param("end") int end);
+    List<Goods> queryAllGoods(@Param("start") int start,@Param("end") int end,@Param("cat") int cat);
 
     int getGoodsCount();
 

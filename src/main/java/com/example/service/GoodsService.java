@@ -19,8 +19,8 @@ public class GoodsService implements GoodsMapper {
     }
 
     @Override
-    public List<Goods> queryGoods(int gscid) {
-        return goodsMapper.queryGoods(gscid);
+    public List<Goods> queryGoods(int gSubCid) {
+        return goodsMapper.queryGoods(gSubCid);
     }
 
     @Override
@@ -29,8 +29,8 @@ public class GoodsService implements GoodsMapper {
     }
 
     @Override
-    public List<Goods> queryAllGoods(int start,int end) {
-        return goodsMapper.queryAllGoods(start, end);
+    public List<Goods> queryAllGoods(int start,int end,int cat) {
+        return goodsMapper.queryAllGoods(start, end,cat);
     }
 
     @Override

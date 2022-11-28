@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>MANNING - 首页</title>
-    <script th:src="@{js/jquery.js}"></script>
-    <script th:src="@{js/vue.js}"></script>
-    <link rel="stylesheet" th:href="@{element-ui/theme-chalk/index.css}">
-<!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
-<!--    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
-    <script th:src="@{element-ui/index.js}"></script>
-    <link rel="stylesheet" th:href="@{css/container.css}">
-    <link rel="stylesheet" th:href="@{css/header.css}">
-    <link rel="stylesheet" th:href="@{css/index.css}">
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/vue.js}"></script>
+    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+    <script th:src="@{/element-ui/index.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/container.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
     <style>
         .goods-sub-category{
             padding: 20px 10px;
@@ -38,43 +37,40 @@
                                 width="450"
                                 trigger="hover">
                             <div class="goods-more-tab">
-                                <el-link :underline="false" href="https://element.eleme.io">
-                                    <span class="tab-title">更多分类</span>
-                                </el-link>
-                                <el-link class="tab-subtitle" :underline="false" th:href="@{cid/101}">手机通讯</el-link>
+                                <span class="tab-title">更多分类</span>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1001}">手机通讯</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">数码配件</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1002}">数码配件</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">智能设备</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1003}">智能设备</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">影音娱乐</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1004}">影音娱乐</el-link>
                             </div>
                             <div class="goods-more-tab">
-                                <el-link href="https://element.eleme.io" :underline="false">
-                                    <span class="tab-title">更多品牌</span>
-                                </el-link>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">Apple</el-link>
+                                <span class="tab-title">更多品牌</span>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">Apple</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">小米</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">小米</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">三星</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">三星</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">华为</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">华为</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">一加</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">一加</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io" target="_blank">OPPO</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io" target="_blank">OPPO</el-link>
                             </div>
 
                             <div slot="reference" style="text-align: left;">
                                 <el-link class="tab-title" :underline="false">手机数码</el-link>
                             </div>
+
                             <div class="goods-sub-category" slot="reference">
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">Apple</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1001}">手机通讯</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">华为</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1002}">数码配件</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">三星</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1003}">智能设备</el-link>
                             </div>
                         </el-popover>
 <!-- 手机数码end -->
@@ -85,30 +81,30 @@
                                 width="450"
                                 trigger="hover">
                             <div class="goods-more-tab">
-                                <el-link :underline="false" href="https://element.eleme.io" target="_blank">
-                                    <span class="tab-title">更多分类</span>
-                                </el-link>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">游戏机</el-link>
+                                <span class="tab-title">更多分类</span>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1005}">游戏机</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">游戏配件</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1006}">游戏配件</el-link>
                             </div>
                             <div class="goods-more-tab">
-                                <el-link href="https://element.eleme.io" :underline="false">
-                                    <span class="tab-title">更多品牌</span>
-                                </el-link>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">任天堂</el-link>
+                                <span class="tab-title">更多品牌</span>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">任天堂</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">微软</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">微软</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">索尼</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">索尼</el-link>
                             </div>
+
+                            <div slot="reference" style="text-align: left;">
+                                <el-link class="tab-title" :underline="false">游戏装备</el-link>
+                            </div>
+
                             <div class="goods-sub-category" slot="reference">
-                                <el-link class="tab-title" :underline="false">游戏装备</el-link><br>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">Switch游戏</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1006}">Switch游戏</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">PS4游戏</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1006}">PS4游戏</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">游戏手柄</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1006}">游戏手柄</el-link>
                             </div>
                         </el-popover>
 <!-- 游戏装备end -->
@@ -119,34 +115,40 @@
                                 width="450"
                                 trigger="hover">
                             <div class="goods-more-tab">
-                                <el-link :underline="false" href="https://element.eleme.io" target="_blank">
-                                    <span class="tab-title">热门</span>
-                                </el-link>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">激光打印机</el-link>
+                                <span class="tab-title">热门</span>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">激光打印机</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">按摩椅</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">按摩椅</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子书</el-link>
+                                <el-link disabled class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子书</el-link>
                             </div>
                             <div class="goods-more-tab">
-                                <el-link href="https://element.eleme.io" :underline="false">
-                                    <span class="tab-title">更多分类</span>
-                                </el-link>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">保健护理</el-link>
+                                <span class="tab-title">更多分类</span>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1007}">保健护理</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">办公用品</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1008}">办公用品</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">五金工具</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1009}">五金工具</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">办公设备</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1010}">办公设备</el-link>
                             </div>
+
+
+                            <div slot="reference" style="text-align: left;">
+                                <el-link class="tab-title" :underline="false">生活百货</el-link>
+                            </div>
+
                             <div class="goods-sub-category" slot="reference">
-                                <el-link class="tab-title" :underline="false">生活百货</el-link><br>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">打印机</el-link>
+<!--                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">打印机</el-link>-->
+<!--                                <el-divider direction="vertical"></el-divider>-->
+<!--                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子书</el-link>-->
+<!--                                <el-divider direction="vertical"></el-divider>-->
+<!--                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子门锁</el-link>-->
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1007}">保健护理</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子书</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1008}">办公用品</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">电子门锁</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1009}">五金工具</el-link>
                             </div>
                         </el-popover>
 <!-- 生活百货 -->
@@ -158,25 +160,26 @@
                                 trigger="hover">
 
                             <div class="goods-more-tab">
-                                <el-link href="https://element.eleme.io" :underline="false">
-                                    <span class="tab-title">推荐</span>
-                                </el-link>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">IT服务</el-link>
+                                <span class="tab-title">推荐</span>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=10012}">IT服务</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">语言翻译</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1014}">语言翻译</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">摄影约拍</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1015}">摄影约拍</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">绘画书法</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=1016}">绘画书法</el-link>
+                            </div>
+
+                            <div slot="reference" style="text-align: left;">
+                                <el-link class="tab-title" :underline="false">技能服务</el-link>
                             </div>
 
                             <div class="goods-sub-category" slot="reference">
-                                <el-link class="tab-title" :underline="false">技能服务</el-link><br>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">兼职家教</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=10011}">兼职家教</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">IT服务</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=10012}">IT服务</el-link>
                                 <el-divider direction="vertical"></el-divider>
-                                <el-link class="tab-subtitle" :underline="false" href="https://element.eleme.io">跑腿代办</el-link>
+                                <el-link class="tab-subtitle" :underline="false" th:href="@{goods/list.html?cat=10013}">跑腿代办</el-link>
                             </div>
                         </el-popover>
 <!-- 技能服务end -->
@@ -228,7 +231,7 @@
                 <template v-for="(item, index) in dayGoods">
                     <el-col :span="4"><div class="grid-content">
                         <el-card  :body-style="{ padding: '0px' }">
-                            <img class="image" v-bind:src="['/img/' + item.cover + '.jpg']">
+                            <img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"  class="image">
                             <div class="card-goods">
                                 <p class="card-goods-name" >{{item.name}}</p>
                                 <p class="card-goods-price">￥ {{item.price}}</p>
@@ -247,7 +250,7 @@
                 <template v-for="item in eventGoods">
                     <el-col :span="4"><div class="grid-content">
                         <el-card  :body-style="{ padding: '0px' }">
-                            <img class="image" v-bind:src="['/img/' + item.cover + '.jpg']">
+                            <img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"  class="image">
                             <div class="card-goods">
                                 <p class="card-goods-name">{{item.name}}</p>
                                 <p class="card-goods-price">￥ {{item.price}}</p>
@@ -269,7 +272,7 @@
                 <template v-for="item in likeGoods">
                     <el-col style="margin: 20px 10px" :span="4"><div class="grid-content">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img v-bind:src="['/img/' + item.cover + '.jpg']"  class="image">
+                            <img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"  class="image">
                             <div class="card-goods">
                                 <p class="card-goods-name">{{item.name}}</p>
                                 <p class="card-goods-price">￥ {{item.price}}</p>
@@ -284,9 +287,6 @@
         <el-footer>Footer</el-footer>
     </el-container>
 
-    <!--    <template>-->
-    <!--        <el-backtop target=".page-component__scroll .el-scrollbar__wrap"></el-backtop>-->
-    <!--    </template>-->
 </div>
 </body>
 <script th:src="@{/js/hquery.js}"></script>
@@ -317,12 +317,12 @@
 
     function initGoods() {
         const req = {}
-        req.gscid = 1001;
+        req.gSubCid = 1001;
         H.form('goods/queryGoods.do',req,function (ret) {
             app.dayGoods = ret.data;
         })
 
-        req.gscid = 1003
+        req.gSubCid = 1003
         H.form('goods/queryGoods.do',req,function (ret) {
             app.eventGoods = ret.data;
         })

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>个人中心</title>
-    <script th:src="@{js/jquery.js}"></script>
-    <script th:src="@{js/vue.js}"></script>
-    <link rel="stylesheet" th:href="@{element-ui/theme-chalk/index.css}">
-    <script th:src="@{element-ui/index.js}"></script>
-    <link rel="stylesheet" th:href="@{css/container.css}">
-    <link rel="stylesheet" th:href="@{css/header.css}">
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/vue.js}"></script>
+    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+    <script th:src="@{/element-ui/index.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/container.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
 </head>
 <style>
 
@@ -67,31 +67,34 @@
                             <el-table stripe :data="goods.filter(data => !table_goods_search_text || data.name.toLowerCase().includes(table_goods_search_text.toLowerCase()))"
                                     style="width: 100%">
                                 <el-table-column
+                                        sortable
                                         prop="id"
                                         label="ID"
-                                        width="70">
+                                        width="80">
                                 </el-table-column>
                                 <el-table-column
                                         prop="name"
                                         label="名称">
                                 </el-table-column>
                                 <el-table-column
+                                        sortable
                                         prop="price"
                                         label="售价"
                                         width="80">
                                 </el-table-column>
 
                                 <el-table-column
+                                        sortable
                                         prop="view"
                                         label="浏览"
-                                        width="50">
+                                        width="80">
                                 </el-table-column>
 
                                 <el-table-column
                                         :formatter="table_goods_count_formatter"
                                         prop="count"
                                         label="数量"
-                                        width="50">
+                                        width="80">
                                 </el-table-column>
 
                                 <el-table-column
@@ -288,11 +291,11 @@
         </el-main>
 
         <template>
-            <el-dialog title="商品信息" :visible.sync="dialogFormVisible_table_goods">
+            <el-dialog @close="table_goods_select_goods_dialog_close()" title="商品信息" :visible.sync="dialogFormVisible_table_goods">
                 <el-form :model="select_goods">
 
                     <el-form-item label="封面" :label-width="formLabelWidth">
-                        <img :src="['/img/' + select_goods.cover + '.jpg']"  class="image">
+                        <img :src="['/data/goods/' + select_goods.id + '/cover/' + select_goods.cover + '.jpg']"  class="image">
                     </el-form-item>
 
                     <el-form-item v-show="select_goods.id != null" label="ID" :label-width="formLabelWidth">
@@ -323,9 +326,9 @@
                             </el-select>
                         </el-col>
                         <el-col :span="11">
-                            <el-select v-model="select_goods.gScid" placeholder="请选择类别">
+                            <el-select v-model="select_goods.gSubCid" placeholder="请选择类别">
                                 <template v-for="item in goods_sub_category">
-                                    <el-option :label="item.scName" :value='item.scid'></el-option>
+                                    <el-option :label="item.name" :value='item.id'></el-option>
                                 </template>
                             </el-select>
                         </el-col>
@@ -393,8 +396,7 @@
             srcGoods:[],
             // 商品管理选中的商品以及添加商品时的goods
             select_goods:{
-                gCid:101,
-                count:0,
+                gCid:101, count:0,gSubCid:1001
             },
             // 用户管理选中的用户以及创建用户时的user
             select_user:{},
@@ -482,6 +484,9 @@
             table_goods_cid_change(){
                 getAllSubCategory()
             },
+            table_goods_select_goods_dialog_close(){
+                app.select_goods = {gCid:101, count:0,gSubCid:1001};
+            },
 
 // 点击事件
             handleSelect(key, keyPath) {
@@ -561,6 +566,9 @@
                     })
                 }else{
                     console.log('添加商品:',select_goods.id)
+                    // select_goods.gSubCid = app.goods_sub_category[0].id
+                    // if (select_goods.count === undefined)
+                    //     select_goods.count = 1
                     H.rest('goods/insertGoods.do',this.select_goods,function (ret) {
                         console.log(ret.reason)
                     })
@@ -568,7 +576,8 @@
 
             },
             submit_select_user_form_dialog:function () {
-                H.rest('user/updateUserInfo.do',app.select_user,function (ret) {
+                const req = app.select_user;
+                H.rest('user/updateUserInfo.do',req,function (ret) {
                     if (ret.status === 0){
                         getAllUser()
                         app.dialogFormVisible_table_user = false
@@ -576,9 +585,6 @@
                         app.$message.error(ret.reason);
                     }
                 })
-            },
-            submit_add_goods_form_dialog:function (){
-
             }
         }
     })
@@ -624,7 +630,7 @@
         req.gCid = app.select_goods.gCid;
         H.form('goods/Subcategory.do',req,function (ret) {
             app.goods_sub_category = ret.data;
-            app.select_goods.gScid = app.goods_sub_category[0].scid;
+            app.select_goods.gSubCid = app.goods_sub_category[0].id;
         })
     }
     getAllSubCategory();

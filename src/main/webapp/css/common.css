@@ -1,0 +1,45 @@
+/* 商品卡片*/
+.time {
+    font-size: 13px;
+    color: #999;
+}
+
+.bottom {
+    margin-top: 13px;
+    line-height: 12px;
+}
+
+.button {
+    padding: 0;
+    float: right;
+}
+
+.image {
+    width: 100%;
+    display: block;
+    /*padding: 20px;*/
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}
+/*商品信息*/
+.card-goods{
+    padding: 14px;
+}
+.card-goods-name{
+    height: 40px;font-size: 12px;
+    line-height: 20px;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+}
+.card-goods-price{
+    color: #e33333;
+}
+/* 商品卡片end*/

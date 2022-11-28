@@ -1,18 +1,19 @@
 package com.example.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.mapper.GoodsSubcategoryMapper;
+import com.example.mapper.GoodsSubCategoryMapper;
 import com.example.pojo.BaseResponse;
 import com.example.pojo.Goods;
 import com.example.pojo.GoodsSubcategory;
 import com.example.pojo.User;
 import com.example.service.GoodsService;
-import com.example.service.GoodsSubcategoryService;
+import com.example.service.GoodsSubCategoryService;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,10 +24,7 @@ public class GoodsController {
     @Resource
     private GoodsService goodsService;
     @Resource
-    private GoodsSubcategoryService goodsSubcategoryService;
-
-    @Resource
-    private GoodsSubcategoryMapper goodsSubcategoryMapper;
+    private GoodsSubCategoryService goodsSubCategoryService;
 
     /**
      * 获取商品子类别
@@ -35,19 +33,19 @@ public class GoodsController {
      */
     @PostMapping("/goods/Subcategory.do")
     public BaseResponse querySubcategory(@RequestParam Integer gCid){
-        List<GoodsSubcategory> goodsSubCategory = goodsSubcategoryService.querySubCategory(gCid);
+        List<GoodsSubcategory> goodsSubCategory = goodsSubCategoryService.querySubCategory(gCid);
         logger.error(gCid);
-        return BaseResponse.success(goodsSubcategoryService.querySubCategory(gCid));
+        return BaseResponse.success(goodsSubCategoryService.querySubCategory(gCid));
     }
 
     /**
      * 获取指定子类别商品
-     * @param gscid
+     * @param gSubCid
      * @return
      */
     @PostMapping("/goods/queryGoods.do")
-    public BaseResponse queryGoods(@RequestParam int gscid){
-        List<Goods> goods = goodsService.queryGoods(gscid);
+    public BaseResponse queryGoods(@RequestParam int gSubCid){
+        List<Goods> goods = goodsService.queryGoods(gSubCid);
         return BaseResponse.success(goods);
     }
 
@@ -78,8 +76,8 @@ public class GoodsController {
             end = current_page * page_size;
         }
         JSONObject jsonObject = new JSONObject();
-        List<Goods> goods = goodsService.queryAllGoods(start,end);
-        List<Goods> srcGoods = goodsService.queryAllGoods(-1,-1);
+        List<Goods> goods = goodsService.queryAllGoods(start,end,0);
+        List<Goods> srcGoods = goodsService.queryAllGoods(-1,-1,0);
         jsonObject.put("goods",goods);
         jsonObject.put("total",total);
         jsonObject.put("page_count",page_count);
@@ -142,7 +140,16 @@ public class GoodsController {
      * @return
      */
     @PostMapping("/goods/insertGoods.do")
-    public BaseResponse insertGoods(@RequestBody Goods goods){
+    public BaseResponse insertGoods(HttpSession session,@RequestBody Goods goods){
+        User sessionUser = (User) session.getAttribute("user");
+        goods.setView(1);
+        goods.setUid(sessionUser.getId());
+        goods.setIsDel(0);
+        goods.setCreateBy(sessionUser.getUsername());
+        goods.setCreateTime(new Date());
+        if (goods.getCover() == null){
+            goods.setCover(404);
+        }
         int row = goodsService.insertGoods(goods);
         logger.error(row);
         return BaseResponse.success();

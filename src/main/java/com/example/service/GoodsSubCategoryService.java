@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.mapper.GoodsSubcategoryMapper;
+import com.example.mapper.GoodsSubCategoryMapper;
 import com.example.pojo.GoodsSubcategory;
 import org.springframework.stereotype.Service;
 
@@ -8,18 +8,18 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-public class GoodsSubcategoryService implements GoodsSubcategoryMapper {
+public class GoodsSubCategoryService implements GoodsSubCategoryMapper {
 
     @Resource
-    GoodsSubcategoryMapper goodsSubcategoryMapper;
+    GoodsSubCategoryMapper goodsSubcategoryMapper;
 
     @Override
-    public List<GoodsSubcategory> querySubCategory(Integer cid) {
-        return goodsSubcategoryMapper.querySubCategory(cid);
+    public List<GoodsSubcategory> querySubCategory(Integer gCid) {
+        return goodsSubcategoryMapper.querySubCategory(gCid);
     }
 
     @Override
-    public int deleteByPrimaryKey(Integer scid) {
+    public int deleteByPrimaryKey(Integer id) {
         return 0;
     }
 
@@ -29,7 +29,7 @@ public class GoodsSubcategoryService implements GoodsSubcategoryMapper {
     }
 
     @Override
-    public GoodsSubcategory selectByPrimaryKey(Integer scid) {
+    public GoodsSubcategory selectByPrimaryKey(Integer id) {
         return null;
     }
 
