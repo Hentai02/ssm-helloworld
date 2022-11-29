@@ -247,19 +247,30 @@
 										</el-table-column>
 										<el-table-column prop="createBy" label="下单人" width="80">
 										</el-table-column>
-										<el-table-column :formatter="table_date_formatter" prop="createTime"
-														 label="创建时间" width="180">
-											<template slot="header" slot-scope="scope">
-												<el-input
-														  v-model="table_shop_cart_search_text" size="small"
-														  placeholder="输入关键字搜索" />
-											</template>
+
+										<el-table-column sortable :formatter="table_date_formatter" prop="createTime"
+														 label="创建时间" width="120">
+
+										</el-table-column>
+
+										<el-table-column prop="number" label="快递单号"
+										:formatter="table_shopCartClear_number_formatter"
+														 width="200">
+
 										</el-table-column>
 
 										<el-table-column align="right" label="操作" width="150">
+											<template slot="header" slot-scope="scope">
+												<el-input
+														v-model="table_shop_cart_search_text" size="small"
+														placeholder="输入关键字搜索" />
+											</template>
 											<template slot-scope="scope">
 												<el-button size="mini" type="danger"
 														   @click="handleDelete_table_shopCartClear(scope.$index, scope.row)">删除
+												</el-button>
+												<el-button size="mini" type="success"
+														   @click="handleDelete_table_number(scope.$index, scope.row)">发货
 												</el-button>
 											</template>
 										</el-table-column>
@@ -276,13 +287,26 @@
 							<el-tab-pane><span slot="label"><i class="el-icon-user"></i> 我的信息 </span>
 								<el-form :model="session_user" :rules="rules" ref="session_user" label-width="100px"
 										 class="demo-ruleForm">
-									<el-form-item label="头像：" prop="avatar">
-										<div style="text-align: left" class="demo-basic--circle">
-											<div class="block">
-												<el-avatar shape="square" :size="80" :src="session_user.avatar">
-												</el-avatar>
-											</div>
-										</div>
+									<el-form-item style="text-align: start" label="头像：" prop="avatar">
+										<!--										<div style="text-align: left" class="demo-basic&#45;&#45;circle">-->
+										<!--											<div class="block">-->
+										<!--												<el-avatar shape="square" :size="80" :src="session_user.avatar">-->
+										<!--												</el-avatar>-->
+										<!--											</div>-->
+										<!--										</div>-->
+
+										<el-upload
+												class="avatar-uploader"
+												action="/app/user/fileUpload.do"
+												name="avatar"
+												:show-file-list="false"
+												:on-success="handleAvatarSuccess"
+												:before-upload="beforeAvatarUpload">
+											<img v-if="session_user.avatar" :src="session_user.avatar" class="avatar">
+											<!--											<img v-if="!session_user.avatar" :src="imageUrl.tempName" class="avatar">-->
+											<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+										</el-upload>
+
 									</el-form-item>
 
 									<el-form-item label="昵称：" prop="nickname">
@@ -337,15 +361,16 @@
 										<el-table-column prop="isDel" label="状态"
 														 :formatter="table_shopCartClear_status_formatter" width="80">
 										</el-table-column>
-										<el-table-column prop="createBy" label="下单人" width="80">
+
+										<el-table-column prop="number" label="快递单号"
+														 :formatter="table_shopCartClear_number_formatter"
+														  width="200">
 										</el-table-column>
+
+<!--										<el-table-column prop="createBy" label="下单人" width="80">-->
+<!--										</el-table-column>-->
 										<el-table-column :formatter="table_date_formatter" prop="createTime"
 														 label="创建时间" width="180">
-											<template slot="header" slot-scope="scope">
-												<el-input @input="table_goods_search_input"
-														  v-model="table_goods_search_text" size="small"
-														  placeholder="输入关键字搜索" />
-											</template>
 										</el-table-column>
 
 										<el-table-column align="right" label="操作" width="150">
@@ -353,6 +378,11 @@
 												<el-button size="mini" type="danger"
 														   @click="handleDelete_table_shopCartClear(scope.$index, scope.row)">删除
 												</el-button>
+											</template>
+											<template slot="header" slot-scope="scope">
+												<el-input @input="table_goods_search_input"
+														  v-model="table_goods_search_text" size="small"
+														  placeholder="输入关键字搜索" />
 											</template>
 										</el-table-column>
 
@@ -477,9 +507,23 @@
 					</el-dialog>
 				</template>
 				<!-- 用户信息对话框 end -->
-				
+
+				<template>
+					<el-dialog title="发货" :visible.sync="dialogFormVisible_table_order">
+						<el-input
+								placeholder="请填写快递单号"
+								v-model="orderForm.number">
+						</el-input>
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="dialogFormVisible_table_order = false">取 消</el-button>
+							<el-button type="primary" @click="submit_order_form_dialog()">确 定</el-button>
+						</div>
+					</el-dialog>
+				</template>
+
+
 				<!-- 脚注 start -->
-				<el-footer>Footer</el-footer>
+				<div th:replace="~{footer :: copy}"></div>
 				<!-- 脚注 end -->
 				
 			</el-container>
@@ -520,6 +564,7 @@
 				search_input: '',
 				dialogFormVisible_table_goods: false,
 				dialogFormVisible_table_user: false,
+				dialogFormVisible_table_order:false,
 				formLabelWidth: '120px',
 				activeIndex: '1',
 				activeIndex2: '1',
@@ -584,16 +629,10 @@
 					page_sizes: 0
 				},
 				imageUrl: '',
-				fileList: []
-			},
-			computed: {
-				computedDataId: {
-					get() {
-						return this.select_goods.id.toString()
-					},
-					set(val) {
-						this.select_goods.id = Number(val)
-					}
+				fileList: [],
+				orderForm:{
+					number:'',
+					id:''
 				}
 			},
 			methods: {
@@ -606,6 +645,7 @@
 				handleSearch(){
 					location.href = "/app/goods/search.html?search=" + app.search_input;
 				},
+
 				handleAvatarSuccess(res, file) {
 					this.session_user.avatar = "/app/tmp/" + res.data.tmpFileName
 					this.$message.success('上传成功!');
@@ -647,6 +687,9 @@
 						return '管理员'
 					}
 					return cellValue >= 0 ? '正常' : '封禁中'
+				},
+				table_shopCartClear_number_formatter:function(row, column, cellValue, index) {
+					return cellValue === null ? '未发货' : cellValue
 				},
 
 				// 回调
@@ -728,6 +771,10 @@
 						getAllUser()
 					})
 				},
+				handleDelete_table_number(index, row){
+					this.dialogFormVisible_table_order = true
+					this.orderForm.id = row.id
+				},
 				handleAllow_table_user(index, row) {
 					const req = {}
 					req.id = row.id;
@@ -764,10 +811,17 @@
 						// if (select_goods.count === undefined)
 						//     select_goods.count = 1
 						H.rest('goods/insertGoods.do', this.select_goods, function(ret) {
-							console.log(ret.reason)
+							app.$message.success(ret.reason)
 						})
 					}
 
+				},
+				submit_order_form_dialog:function () {
+					H.form('goods/shipments.do',this.orderForm,function (ret) {
+						app.$message.success(ret.reason)
+						app.dialogFormVisible_table_order = false
+						f()
+					})
 				},
 				submit_select_user_form_dialog: function() {
 					const req = app.select_user;
@@ -796,6 +850,7 @@
 		function updateUserInfo(form) {
 			H.rest('user/updateUserInfo.do', form, function(ret) {
 				if (ret.status === 0) {
+					alert(ret.reason)
 					location.reload();
 				} else {
 					app.$message.error(ret.reason);

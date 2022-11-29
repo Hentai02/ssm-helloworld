@@ -11,8 +11,9 @@ body {
 }
 
 /*.el-container{*/
-/*    width: 900px;*/
-/*    margin: 0 auto;*/
+/*    !*width: 900px;*!*/
+/*    !*margin: 0 auto;*!*/
+/*    !*background-color: #f4f4f4;*!*/
 /*}*/
 
 .el-header, .el-footer {
@@ -28,6 +29,7 @@ body {
     /*line-height: 160px;*/
     width: 1200px;
     margin: 0 auto;
+    /*background-color: #f4f4f4;*/
 }
 
 body > .el-container {

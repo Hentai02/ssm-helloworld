@@ -28,6 +28,37 @@ public class UserController {
     @Resource
     private UserService userService;
 
+
+    /**
+     * 注册
+     * @param username
+     * @param password
+     * @return
+     */
+    @PostMapping("/reg.do")
+    public BaseResponse reg(@RequestParam String username,
+                            @RequestParam String password){
+
+        User data = userService.userVerify(username, null);
+        if (data != null)return BaseResponse.fail("用户名已被使用！");
+        User user = new User();
+        user.setNickname(username);
+        user.setUsername(username);
+        password = DigestUtils.md5DigestAsHex((password).getBytes());
+        user.setPassword(password);
+        user.setAvatar("/app/data/user/avatar.png");
+        user.setGender("男");
+        user.setAddress("");
+        user.setPhone("");
+        user.setIsDel(0);
+        user.setCreateBy(username);
+        user.setCreateTime(new Date());
+        user.setUpdateTime(new Date());
+        user.setUpdateBy(username);
+        userService.insert(user);
+        return BaseResponse.success("注册成功！",201);
+    }
+
     /**
      * 登录验证
      * @param username
@@ -38,7 +69,6 @@ public class UserController {
     public BaseResponse login(@RequestParam String username,
                                      @RequestParam String password,
                                      HttpSession session){
-        Map<String, Object> map = new HashMap<String, Object>();
         password = DigestUtils.md5DigestAsHex((password).getBytes());
         try{
             User user = userService.userVerify(username, password);
@@ -46,7 +76,7 @@ public class UserController {
                 if (user.getIsDel() < 0)
                     return BaseResponse.fail("账号封禁中！");
                 session.setAttribute("user",user);
-                return BaseResponse.success();
+                return BaseResponse.success("登录成功！",200);
             }else
                 return BaseResponse.fail("账号或密码错误!");
         }catch (Exception e){

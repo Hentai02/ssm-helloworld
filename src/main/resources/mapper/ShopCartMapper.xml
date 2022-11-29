@@ -11,6 +11,7 @@
     <result column="count" jdbcType="INTEGER" property="count" />
     <result column="g_id" jdbcType="INTEGER" property="gId" />
     <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
     <result column="is_del" jdbcType="INTEGER" property="isDel" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -55,6 +56,13 @@
     </if>
     where g_id = #{gId,jdbcType=INTEGER}
   </update>
+
+  <update id="updateNumber">
+    update ss_shop_cart
+    set number = #{number,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
@@ -69,12 +77,16 @@
     from ss_shop_cart as p1 INNER JOIN ss_goods AS p2
     on p1.g_id = p2.id
     <if test="isDel == -1">
-      where p1.is_del = #{isDel} AND p1.uid=#{uid,jdbcType=INTEGER}
+      where p1.is_del = #{isDel}
+      <if test="uid != 1">
+        AND p1.uid=#{uid,jdbcType=INTEGER}
+      </if>
     </if>
     <if test="isDel == 0">
       where p1.is_del != -1 AND p1.uid=#{uid,jdbcType=INTEGER}
     </if>
   </select>
+
   <select id="queryBygId" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
@@ -83,6 +95,6 @@
     -->
     select *
     from ss_shop_cart
-    where g_id=#{gId} and is_del >= 0
+    where g_id=#{gId} and is_del >= 0 and uid=#{uid}
   </select>
 </mapper>

@@ -182,6 +182,18 @@ public class GoodsController {
         return BaseResponse.success("修改成功！");
     }
 
+    /**
+     * 发货
+     * @param id
+     * @param number
+     * @return
+     */
+    @PostMapping("/goods/shipments.do")
+    public BaseResponse shipments(@RequestParam Integer id,@RequestParam String number){
+        shopCartMapper.updateNumber(number,id);
+        return BaseResponse.success("发货成功！");
+    }
+
 
     /**
      * 添加商品
@@ -241,7 +253,7 @@ public class GoodsController {
     public BaseResponse insertCart(@RequestParam Integer count,@RequestParam Integer gId,HttpSession session){
         User session_user = (User) session.getAttribute("user");
         ShopCart shopCart = new ShopCart();
-        ShopCart goodsOne = shopCartMapper.queryBygId(gId);
+        ShopCart goodsOne = shopCartMapper.queryBygId(gId,session_user.getId());
         if (session_user != null){
             if (goodsOne != null && goodsOne.getIsDel() >= 0){
                 if (goodsOne.getUid().equals(session_user.getId())){

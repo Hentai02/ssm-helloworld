@@ -34,6 +34,10 @@ public class BaseResponse {
         return new BaseResponse(0,reason);
     }
 
+    public static BaseResponse success(String reason,Integer status){
+        return new BaseResponse(status,reason);
+    }
+
     public static BaseResponse success(Object data){
         if (data instanceof JSON){
             return new BaseResponse(0,"OK",data);

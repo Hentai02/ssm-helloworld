@@ -12,6 +12,7 @@ public interface UserMapper {
 
     int updateUserInfo(User user);
     int updateUserAddress(User user);
+    int insert(User user);
 
     int changeUserStatus(@Param("status") int status,@Param("id") int id);
 

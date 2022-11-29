@@ -242,9 +242,6 @@
 									<img width="147" src="img/c.webp">
 								</el-col>
 							</el-row>
-<!--							<el-row>-->
-<!--								广告位招租-->
-<!--							</el-row>-->
 
 							<!-- 仅展示商品图片 end -->
 							</el-card>
@@ -318,9 +315,9 @@
 					<!-- 猜你喜欢 start -->
 					<el-image src="img/5edc2b84c2367ab8.jpg" fit="contain"></el-image>
 					<el-divider content-position="right">
-						<el-link href="https://element.eleme.io" target="_blank">更多</el-link>
+						<el-link href="/app/goods/list.html?cat=1001" target="_blank">更多</el-link>
 					</el-divider>
-					<el-row type="flex" class="row-bg" justify="space-start" style="flex-wrap: wrap;">
+					<el-row type="flex" class="row-bg" justify="space-between" style="flex-wrap: wrap;">
 						<template v-for="item in likeGoods">
 							<el-col style="margin: 20px 10px" :span="4">
 								<div class="grid-content">
@@ -343,7 +340,7 @@
 					<!-- 猜你喜欢 end -->
 				</el-main>
 				<!-- 脚注 start -->
-				<el-footer>Footer</el-footer>
+				<div th:replace="~{footer :: copy}"></div>
 				<!-- 脚注 end -->
 			</el-container>
 		</div>
