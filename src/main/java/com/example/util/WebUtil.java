@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
