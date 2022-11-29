@@ -13,7 +13,7 @@ public interface GoodsMapper {
 
     List<Goods> likeGoods();
 
-    List<Goods> queryAllGoods(@Param("start") int start,@Param("end") int end,@Param("cat") int cat);
+    List<Goods> queryAllGoods(@Param("start") int start,@Param("end") int end,@Param("cat") int cat,@Param("cid") Integer cid);
 
     int getGoodsCount();
 
@@ -24,4 +24,8 @@ public interface GoodsMapper {
     Goods getGoods(@Param("id") int id);
 
     int insertGoods(Goods goods);
+
+    List<Goods> queryHotGoods ();
+
+    List<Goods> searchGoods(@Param("search") String search);
 }

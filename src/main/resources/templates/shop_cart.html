@@ -25,7 +25,7 @@
                             <el-descriptions-item th:text="${session.user.phone}" label="手机号">18100000000</el-descriptions-item>
                             <el-descriptions-item th:text="${session.user.address}" label="联系地址">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
                         </el-descriptions>
-                        <el-button type="text">修改地址</el-button>
+                        <el-button type="text" @click="dialogFormVisible = true">修改地址</el-button>
                     </el-card>
                 </el-row>
                 <el-row :gutter="20">
@@ -42,10 +42,13 @@
                             </el-table-column>
                             <el-table-column
                                     label="商品"
-                                    prop="cover">
+                                    prop="cover"
+                            width="150">
                                 <template slot-scope="scope">
-                                    <img height="80" :src="['/data/goods/' + scope.row.gId + '/cover/' + scope.row.cover + '.jpg']"
-                                         >
+<!--                                    <img height="80" :src="['/data/goods/' + scope.row.gId + '/cover/' + scope.row.cover + '.jpg']"-->
+<!--                                         >-->
+                                    <img :src="scope.row.cover"
+                                         height="80">
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -55,44 +58,55 @@
                             <el-table-column
                                     prop="price"
                                     label="价格"
-                                    width="200">
+                                    width="100">
                             </el-table-column>
                             <el-table-column
                                     prop="count"
                                     label="数量"
-                                    width="200">
+                                    width="160">
                                 <template slot-scope="scope">
                                     <el-input-number @change="handleChange" size="mini" v-model="scope.row.count" :min="1" :max="99"></el-input-number>
                                 </template>
 
                             </el-table-column>
 
-                            <el-table-column align="right" label="操作" width="200">
-                                <template slot="header" slot-scope="scope">
-                                    <el-input @input="table_goods_search_input"
-                                              v-model="table_goods_search_text" size="small"
-                                              placeholder="输入关键字搜索" />
-                                </template>
-                                <template slot-scope="scope">
-                                    <el-button size="mini"
-                                               @click="handleEdit_table_goods(scope.$index, scope.row)">编辑
-                                    </el-button>
-                                </template>
-                            </el-table-column>
+<!--                            <el-table-column align="right" label="操作" width="200">-->
+<!--                                <template slot="header" slot-scope="scope">-->
+<!--                                    <el-input @input="table_goods_search_input"-->
+<!--                                              v-model="table_goods_search_text" size="small"-->
+<!--                                              placeholder="输入关键字搜索" />-->
+<!--                                </template>-->
+<!--                            </el-table-column>-->
                             </el-table>
                     </template>
                 </el-row>
                 <el-row style="text-align: end">
-<!--                    <el-button>默认按钮</el-button>-->
-<!--                    <el-button type="primary">主要按钮</el-button>-->
-<!--                    <el-button type="success">成功按钮</el-button>-->
-<!--                    <el-button type="info">信息按钮</el-button>-->
-<!--                    <el-button type="warning">警告按钮</el-button>-->
                     <h2 style="font-size: 20px;margin: 20px" class="card-goods-price">￥ {{total}}</h2>
                     <el-button type="text" @click="handleShopCartClear">结算</el-button>
                     <el-button type="text" @click="handleDelShopCart">删除</el-button>
                 </el-row>
             </el-main>
+
+
+            <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+                <el-form :model="form">
+                    <el-form-item label="用户名" :label-width="formLabelWidth">
+                        <el-input disabled v-model="form.username" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号" :label-width="formLabelWidth">
+                        <el-input v-model="form.phone" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="地址" :label-width="formLabelWidth">
+                        <el-input v-model="form.address" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="submit_update_user_dialog(form)">确 定</el-button>
+                </div>
+            </el-dialog>
+
+
             <!-- 脚注 start -->
             <el-footer>Footer</el-footer>
             <!-- 脚注 end -->
@@ -100,7 +114,7 @@
     </div>
 </body>
 <script th:src="@{/js/hquery.js}"></script>
-<script>
+<script th:inline="javascript">
     const app = new Vue({
         el: '#app',
         data: {
@@ -110,23 +124,31 @@
             activeNames: ['1'],
             goods_comment_input: '',
             table_goods_search_text:'',
+            dialogTableVisible: false,
+            dialogFormVisible: false,
+            formLabelWidth: '120px',
             count: '',
             total:0,
             goods_in_cart:[],
-            multipleSelection: []
+            multipleSelection: [],
+            form: {
+                username: [[${session.user.username}]],
+                address:[[${session.user.address}]],
+                phone:[[${session.user.phone}]]
+            },
         }, methods: {
             handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-                if (key === "7-1") {
-                    location.href = "/app/user.html"
-                } else if (key === '7-6') {
-                    H.rest('user/logout.do', null, function(ret) {
+                if (key === "7-6") {
+                    H.rest('/app/user/logout.do', null, function(ret) {
                         location.href = '/app/'
                     })
                 }
             },
             handleChange(value) {
                 console.log(value);
+            },
+            handleSearch(){
+                location.href = "/app/goods/search.html?search=" + app.search_input;
             },
             handleShopCartClear(){
                 const req = {}
@@ -145,6 +167,7 @@
                 })
             },
             handleSelectionChange(val) {
+                console.log(val)
                 this.multipleSelection = val;
                 if (val.length === 0){
                     this.total = 0
@@ -155,12 +178,21 @@
             },
             table_goods_search_input(){
 
+            },
+            submit_update_user_dialog(form){
+                this.dialogFormVisible = false
+                H.rest('/app/user/updateUserAddress.do', form, function(ret) {
+                    location.reload();
+                    app.$message.success(ret.reason);
+                })
             }
         }
     })
 
     function queryAllInCart() {
-        H.form('shopCartAll.do',null,function (ret) {
+        const  req = {}
+        req.isDel = 0
+        H.form('shopCartAll.do',req,function (ret) {
             app.goods_in_cart = ret.data
         })
     }

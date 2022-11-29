@@ -29,8 +29,8 @@ public class GoodsService implements GoodsMapper {
     }
 
     @Override
-    public List<Goods> queryAllGoods(int start,int end,int cat) {
-        return goodsMapper.queryAllGoods(start, end,cat);
+    public List<Goods> queryAllGoods(int start,int end,int cat,Integer cid) {
+        return goodsMapper.queryAllGoods(start, end,cat,cid);
     }
 
     @Override
@@ -56,6 +56,16 @@ public class GoodsService implements GoodsMapper {
     @Override
     public int insertGoods(Goods goods) {
         return goodsMapper.insertGoods(goods);
+    }
+
+    @Override
+    public List<Goods> queryHotGoods() {
+        return goodsMapper.queryHotGoods();
+    }
+
+    @Override
+    public List<Goods> searchGoods(String search) {
+        return goodsMapper.searchGoods(search);
     }
 
 }

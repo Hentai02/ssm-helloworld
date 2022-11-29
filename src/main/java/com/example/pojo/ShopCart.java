@@ -21,11 +21,11 @@ public class ShopCart {
         this.name = name;
     }
 
-    public Integer getCover() {
+    public String getCover() {
         return cover;
     }
 
-    public void setCover(Integer cover) {
+    public void setCover(String cover) {
         this.cover = cover;
     }
 
@@ -38,7 +38,7 @@ public class ShopCart {
     }
 
     private String name;
-    private Integer cover;
+    private String cover;
     private BigDecimal price;
 
     /**

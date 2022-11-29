@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/vue.js}"></script>
+    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+    <script th:src="@{/element-ui/index.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/container.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+    <div id="app">
+        <el-container>
+            <!-- 头部导航栏 start -->
+            <div th:replace="~{header :: copy}"></div>
+            <!-- 头部导航栏 end -->
+            <el-main>
+                <el-row>
+                    <el-col :span="24"><div class="grid-content bg-purple-dark">
+                        <template>
+                           <el-table
+                                    :data="orders.filter(data => !table_orders_search_text || data.name.toLowerCase().includes(table_orders_search_text.toLowerCase()))"
+                                    style="width: 100%">
+                                <el-table-column
+                                        label="商品"
+                                        prop="cover"
+                                        width="150">
+                                    <template slot-scope="scope">
+<!--                                        <img height="80" :src="['/data/goods/' + scope.row.gId + '/cover/' + scope.row.cover + '.jpg']">-->
+                                        <img height="80" :src="scope.row.cover">
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="商品名称"
+                                        prop="name">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="price"
+                                        label="价格"
+                                        width="100">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="count"
+                                        label="数量"
+                                        width="160">
+                                </el-table-column>
+
+                                <el-table-column align="right" label="操作" width="200">
+                                    <template slot="header" slot-scope="scope">
+                                        <el-input
+                                                  v-model="table_orders_search_text" size="small"
+                                                  placeholder="输入关键字搜索" />
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <el-button size="mini" type="danger"
+                                                   @click="handleDelete_table_orders(scope.$index, scope.row)">删除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </template>
+                    </div></el-col>
+                </el-row>
+            </el-main>
+            <el-footer>Footer</el-footer>
+        </el-container>
+    </div>
+</body>
+<script th:src="@{/js/hquery.js}"></script>
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            activeIndex: '1',
+            activeIndex2: '1',
+            search_input: '',
+            table_orders_search_text:'',
+            orders:[],
+        }, methods: {
+            handleSelect(key, keyPath) {
+                if (key === "7-6") {
+                    H.rest('/app/user/logout.do', null, function (ret) {
+                        location.href = '/app/'
+                    })
+                }
+            },
+            handleSearch(){
+                location.href = "/app/goods/search.html?search=" + app.search_input;
+            },
+            handleDelete_table_orders(index, row) {
+                console.log(row)
+                const req = {}
+                req.id = row.id
+                H.form('/app/goods/delOrders.do',req,function (ret) {
+                    app.$message.success(ret.reason);
+                    f()
+                })
+            },
+        }
+    })
+
+    function f() {
+        const req = {}
+        req.isDel = -1;
+        H.form('/app/goods/shopCartAll.do',req,function (ret) {
+            app.orders = ret.data
+        })
+    }
+    f()
+</script>
+</html>

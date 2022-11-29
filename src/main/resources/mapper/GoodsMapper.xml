@@ -16,7 +16,7 @@
         <result column="desc" jdbcType="LONGVARCHAR" property="desc" />
         <result column="view" jdbcType="INTEGER" property="view" />
         <result column="count" jdbcType="INTEGER" property="count" />
-        <result column="cover" jdbcType="INTEGER" property="cover" />
+        <result column="cover" jdbcType="VARCHAR" property="cover" />
         <result column="g_cid" jdbcType="INTEGER" property="gCid" />
         <result column="g_sub_cid" jdbcType="INTEGER" property="gSubCid" />
         <result column="is_del" jdbcType="INTEGER" property="isDel" />
@@ -41,6 +41,9 @@
         <if test="cat != 0">
             where g_sub_cid = #{cat}
         </if>
+        <if test="cid != null">
+            where g_cid = #{cid}
+        </if>
         <if test="start != -1 and end != -1">
             LIMIT #{start},#{end}
         </if>
@@ -56,8 +59,21 @@
         SELECT * FROM `ss_goods` WHERE g_sub_cid=#{gSubCid} AND is_del >= 0 ORDER BY `view` DESC LIMIT 5
     </select>
 
+    <select id="searchGoods" resultMap="BaseResultMap">
+        SELECT * FROM `ss_goods`
+                 WHERE
+        <if test="search != ''">
+            `ss_goods`.`name` like '%' #{search} '%' AND
+        </if>
+            is_del >= 0
+    </select>
+
+    <select id="queryHotGoods" resultMap="BaseResultMap">
+        SELECT * FROM `ss_goods` WHERE is_del >= 0 ORDER BY `view` DESC LIMIT 15
+    </select>
+
     <select id="likeGoods" resultMap="BaseResultMap">
-        SELECT * FROM `ss_goods` WHERE is_del >= 0 ORDER BY RAND() LIMIT 10;
+        SELECT * FROM `ss_goods` WHERE is_del >= 0 ORDER BY RAND() LIMIT 20;
     </select>
 
     <update id="changeGoodsStatus">
@@ -79,7 +95,7 @@
         </if>
         view = #{view,jdbcType=INTEGER},
         count = #{count,jdbcType=INTEGER},
-        cover = #{cover,jdbcType=INTEGER},
+        cover = #{cover,jdbcType=VARCHAR},
         g_cid = #{gCid,jdbcType=INTEGER},
         g_sub_cid = #{gSubCid,jdbcType=INTEGER},
         <if test="count == 0">

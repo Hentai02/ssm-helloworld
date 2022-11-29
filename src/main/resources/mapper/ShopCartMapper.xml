@@ -16,7 +16,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="price" jdbcType="DECIMAL" property="price" />
-    <result column="cover" jdbcType="INTEGER" property="cover" />
+    <result column="cover" jdbcType="VARCHAR" property="cover" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
@@ -68,7 +68,12 @@
     select p1.*,p2.name,p2.price,p2.cover
     from ss_shop_cart as p1 INNER JOIN ss_goods AS p2
     on p1.g_id = p2.id
-    where p1.is_del != -1 AND p1.uid=#{uid,jdbcType=INTEGER}
+    <if test="isDel == -1">
+      where p1.is_del = #{isDel} AND p1.uid=#{uid,jdbcType=INTEGER}
+    </if>
+    <if test="isDel == 0">
+      where p1.is_del != -1 AND p1.uid=#{uid,jdbcType=INTEGER}
+    </if>
   </select>
   <select id="queryBygId" resultMap="BaseResultMap">
     <!--

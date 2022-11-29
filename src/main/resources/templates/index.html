@@ -213,10 +213,11 @@
 						<!-- 左侧分类 end -->
 						
 						<el-col :span="11">
+							<el-card class="box-card">
 							<!-- 走马灯 start -->
-							<div class="grid-content bg-purple-light">
+							<div class="grid-content">
 								<template>
-									<el-carousel indicator-position="outside">
+									<el-carousel  indicator-position="outside">
 										<el-carousel-item v-for="item in urls" :key="item">
 											<el-image :src="item" fit="cover"></el-image>
 										</el-carousel-item>
@@ -227,23 +228,39 @@
 							<!-- 仅展示商品图片 start -->
 							<el-row type="flex" class="row-bg" justify="space-between">
 								<el-col :span="8">
-									<div class="grid-content bg-purple"></div>
+									<img width="170" src="img/a.webp">
 								</el-col>
 								<el-col :span="8">
-									<div class="grid-content bg-purple-light"></div>
+									<img width="170" src="img/b.webp">
 								</el-col>
 								<el-col :span="8">
-									<div class="grid-content bg-purple"></div>
+									<img width="170" src="img/c.webp">
 								</el-col>
 							</el-row>
+							<el-row>
+								广告位招租
+							</el-row>
+
 							<!-- 仅展示商品图片 end -->
+							</el-card>
 						</el-col>
 						
 						<!-- 热搜排行榜 start -->
 						<el-col :span="6">
+							<el-card class="box-card">
 							<div class="grid-content">
 								<span class="heat-search">热搜排行榜</span>
 							</div>
+							<template v-for="(item, index) in hotGoods">
+
+									<p style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;font-size: 14px;color: #000000">
+										<a style="text-decoration: none;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;font-size: 14px;color: #050505" :href="'goods/' + item.id + '.html'" target="_blank" :underline="false">
+										{{index+1}} . {{item.name}}
+										</a>
+									</p>
+
+							</template>
+							</el-card>
 						</el-col>
 						<!-- 热搜排行榜 end -->
 					</el-row>
@@ -257,8 +274,8 @@
 								<div class="grid-content">
 									<el-link :href="'goods/' + item.id + '.html'" target="_blank" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
-											<img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"
-												class="image">
+											<img :src="item.cover"
+												 class="image">
 											<div class="card-goods">
 												<p class="card-goods-name">{{item.name}}</p>
 												<p class="card-goods-price">￥ {{item.price}}</p>
@@ -279,8 +296,8 @@
 								<div class="grid-content">
 									<el-link :href="'goods/' + item.id + '.html'" target="_blank" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
-											<img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"
-												class="image">
+											<img :src="item.cover"
+												 class="image">
 											<div class="card-goods">
 												<p class="card-goods-name">{{item.name}}</p>
 												<p class="card-goods-price">￥ {{item.price}}</p>
@@ -304,7 +321,9 @@
 								<div class="grid-content">
 									<el-link :href="'goods/' + item.id + '.html'" target="_blank" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
-											<img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"
+<!--											<img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"-->
+<!--												class="image">-->
+											<img :src="item.cover"
 												class="image">
 											<div class="card-goods">
 												<p class="card-goods-name">{{item.name}}</p>
@@ -329,22 +348,26 @@
 		const app = new Vue({
 			el: '#app',
 			data: {
+				hotGoods:[],
 				dayGoods: [],
 				eventGoods: [],
 				likeGoods: [],
 				activeIndex: '1',
 				activeIndex2: '1',
 				search_input: '',
-				urls: ['img/carousel_p1.png', 'img/carousel_p2.png', 'img/carousel_p3.png', 'img/carousel_p4.png']
+				urls: ['img/carousel/q1.jpg', 'img/carousel/q2.jpg', 'img/carousel/q3.jpg', 'img/carousel/q4.jpg']
 			},
 			computed: {},
 			methods: {
 				handleSelect(key, keyPath) {
-					if (key === "7-1") {
-						location.href = "/app/user.html";
-					} else if (key === '7-6') {
-
+					if (key === "7-6") {
+						H.rest('/app/user/logout.do', null, function(ret) {
+							location.href = '/app/'
+						})
 					}
+				},
+				handleSearch(){
+					location.href = "/app/goods/search.html?search=" + app.search_input;
 				}
 			}
 		})
@@ -363,6 +386,10 @@
 
 			H.form('goods/queryLikeGoods.do', null, function(ret) {
 				app.likeGoods = ret.data;
+			})
+
+			H.form('goods/queryHotGoods.do',null,function (ret){
+				app.hotGoods = ret.data
 			})
 		}
 		initGoods();

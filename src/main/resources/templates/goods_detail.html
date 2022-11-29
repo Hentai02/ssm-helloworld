@@ -43,19 +43,21 @@
 						<!-- 商品图片轮播图 start -->
 						<el-col :span="10">
 							<div class="grid-content bg-purple">
-								<template>
-									<el-carousel style="height: 450px" indicator-position="outside">
-										<el-carousel-item style="height: 450px" th:each="item : ${goodsCoverList}">
-											<el-image style="height: 450px" th:src="${item.path}" fit="cover">
-											</el-image>
-										</el-carousel-item>
-									</el-carousel>
-								</template>
+<!--								<template>-->
+<!--									<el-carousel style="height: 450px" indicator-position="outside">-->
+<!--										<el-carousel-item style="height: 450px" th:each="item : ${goodsCoverList}">-->
+<!--											<el-image style="height: 450px" th:src="${item.cover}" fit="cover">-->
+<!--											</el-image>-->
+<!--										</el-carousel-item>-->
+<!--									</el-carousel>-->
+<!--								</template>-->
+								<el-image style="height: 450px" th:src="${goods.cover}" fit="cover"></el-image>
 							</div>
 						</el-col>
 						<!-- 商品图片轮播图 end -->
 						<!-- 商品信息 start -->
 						<el-col :span="14">
+							<el-card class="box-card">
 							<div class="grid-content bg-purple">
 								<p class="el-descriptions__title" th:text="${goods.name}"></p>
 								<p style="text-align: start">
@@ -78,6 +80,7 @@
 									<span class="el-descriptions__text">温馨提示 · 支持7天无理由退货</span>
 								</p>
 							</div>
+							</el-card>
 						</el-col>
 						<!-- 商品信息 end -->
 					</el-row>
@@ -111,9 +114,10 @@
 
 											</el-row>
 
-											<el-divider></el-divider>
+<!--											<el-divider></el-divider>-->
 
 											<template th:each="item : ${goodsCommentList} ">
+												<el-divider></el-divider>
 												<el-row style="text-align: start" :gutter="20">
 
 													<el-col :span="1">
@@ -126,7 +130,7 @@
 													</el-col>
 
 													<el-col :span="2">
-														<div class="grid-content bg-purple" th:text="${item.nickname}">
+														<div style="padding-left: 10px" class="grid-content bg-purple" th:text="${item.nickname}">
 															Hentai
 														</div>
 													</el-col>
@@ -187,12 +191,15 @@
             count:''
         },methods: {
             handleSelect(key, keyPath) {
-                if(key === "7-1"){
-                    location.href = '/'
-                }else if(key === '7-6'){
-
-                }
+				if (key === "7-6") {
+					H.rest('/app/user/logout.do', null, function(ret) {
+						location.href = '/app/'
+					})
+				}
             },
+			handleSearch(){
+				location.href = "/app/goods/search.html?search=" + app.search_input;
+			},
 			handleInsertShopCart(){
 				const req = {}
 				req.count = this.count
@@ -222,7 +229,5 @@
             }
         }
     })
-
-	var a = [[${goodsCommentList}]]
 </script>
 </html>

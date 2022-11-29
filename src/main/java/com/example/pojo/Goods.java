@@ -75,7 +75,7 @@ public class Goods {
      *
      * @mbg.generated Sun Nov 20 19:55:35 CST 2022
      */
-    private Integer cover;
+    private String cover;
 
     /**
      *
@@ -298,7 +298,7 @@ public class Goods {
      *
      * @mbg.generated Sun Nov 20 19:55:35 CST 2022
      */
-    public Integer getCover() {
+    public String getCover() {
         return cover;
     }
 
@@ -310,7 +310,7 @@ public class Goods {
      *
      * @mbg.generated Sun Nov 20 19:55:35 CST 2022
      */
-    public void setCover(Integer cover) {
+    public void setCover(String cover) {
         this.cover = cover;
     }
 

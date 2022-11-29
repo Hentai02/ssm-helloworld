@@ -56,15 +56,15 @@ body > .el-container {
 }
 
 .bg-purple-dark {
-    background: #99a9bf;
+    /*background: #99a9bf;*/
 }
 
 .bg-purple {
-    background: #d3dce6;
+    /*background: #d3dce6;*/
 }
 
 .bg-purple-light {
-    background: #e5e9f2;
+    /*background: #e5e9f2;*/
 }
 
 .grid-content {
@@ -74,6 +74,6 @@ body > .el-container {
 
 .row-bg {
     padding: 10px 0;
-    background-color: #f9fafc;
+    /*background-color: #f9fafc;*/
 }
 

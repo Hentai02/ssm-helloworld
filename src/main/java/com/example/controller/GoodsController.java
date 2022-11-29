@@ -8,11 +8,15 @@ import com.example.pojo.*;
 import com.example.service.GoodsCommentService;
 import com.example.service.GoodsService;
 import com.example.service.GoodsSubCategoryService;
+import org.apache.commons.io.FileUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -82,14 +86,24 @@ public class GoodsController {
             end = current_page * page_size;
         }
         JSONObject jsonObject = new JSONObject();
-        List<Goods> goods = goodsService.queryAllGoods(start,end,0);
-        List<Goods> srcGoods = goodsService.queryAllGoods(-1,-1,0);
+        List<Goods> goods = goodsService.queryAllGoods(start,end,0,null);
+        List<Goods> srcGoods = goodsService.queryAllGoods(-1,-1,0,null);
         jsonObject.put("goods",goods);
         jsonObject.put("total",total);
         jsonObject.put("page_count",page_count);
         jsonObject.put("page_size",page_size);
         jsonObject.put("srcGoods",srcGoods);
         return BaseResponse.success(jsonObject);
+    }
+
+    /**
+     * 浏览最多的商品
+     * @return
+     */
+    @PostMapping("/goods/queryHotGoods.do")
+    public BaseResponse queryHotGoods(){
+        List<Goods> goods = goodsService.queryHotGoods();
+        return BaseResponse.success(goods);
     }
 
     /**
@@ -131,7 +145,35 @@ public class GoodsController {
     public BaseResponse updateGoodsInfo(HttpSession session, @RequestBody Goods goods){
         Goods srcGoods = goodsService.getGoods(goods.getId());
         User user = (User) session.getAttribute("user");
-        // TODO: 刷新更新时间 更新者
+        UploadInfo uploadInfo = (UploadInfo) session.getAttribute("uploadInfo");
+        if (uploadInfo != null){
+            File dir = uploadInfo.tmpFile.getParentFile().getParentFile();
+            try {
+                if (uploadInfo.tmpFile.exists()){
+                    FileUtils.delete(uploadInfo.tmpFile);
+                }
+                File srcFile = new File(dir,"/data/goods/" + goods.getId() + "/" + uploadInfo.tmpFileName);
+                Goods goodsed = goodsService.getGoods(goods.getId());
+                File fileed = new File(dir, goodsed.getCover());
+                if (fileed.exists()){
+                    FileUtils.delete(fileed);
+                }
+                goods.setCover("/data/goods/" + goods.getId() + "/" + srcFile.getName());
+            } catch (IOException e) {
+                return BaseResponse.error(e);
+            }
+//            File dir = uploadInfo.tmpFile.getParentFile().getParentFile();
+//            File cover = new File(dir,"/cover");
+//            File[] files = cover.listFiles();
+//            if (files.length>0){
+//                try {
+//                    FileUtils.delete(files[0]);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+
+        }
 //        if (srcGoods.equals(goods)){
 //            logger.error("用没有更改商品信息");
 //            return BaseResponse.success("不改就别点确定！");
@@ -155,7 +197,7 @@ public class GoodsController {
         goods.setCreateBy(sessionUser.getUsername());
         goods.setCreateTime(new Date());
         if (goods.getCover() == null){
-            goods.setCover(404);
+            goods.setCover("/app/data/goods/404");
         }
         int row = goodsService.insertGoods(goods);
         logger.error(row);
@@ -202,18 +244,20 @@ public class GoodsController {
         ShopCart goodsOne = shopCartMapper.queryBygId(gId);
         if (session_user != null){
             if (goodsOne != null && goodsOne.getIsDel() >= 0){
-                shopCartMapper.updateByPrimaryKey(goodsOne.getCount() + count,gId,null);
-            }else{
-                shopCart.setUid(session_user.getId());
-                shopCart.setCreateBy(session_user.getUsername());
-                shopCart.setCount(count);
-                shopCart.setgId(gId);
-                shopCart.setIsDel(1);
-                shopCart.setCreateTime(new Date());
-                shopCartMapper.insert(shopCart);
+                if (goodsOne.getUid().equals(session_user.getId())){
+                    shopCartMapper.updateByPrimaryKey(goodsOne.getCount() + count,gId,null);
+                }
             }
+            shopCart.setUid(session_user.getId());
+            shopCart.setCreateBy(session_user.getUsername());
+            shopCart.setCount(count);
+            shopCart.setgId(gId);
+            shopCart.setIsDel(1);
+            shopCart.setCreateTime(new Date());
+            shopCartMapper.insert(shopCart);
             return BaseResponse.success("已加入购物车！");
         }
+
         return BaseResponse.fail("请先登录！");
     }
 
@@ -224,9 +268,9 @@ public class GoodsController {
      * @return
      */
     @PostMapping("/goods/shopCartAll.do")
-    public BaseResponse queryAllInCart(HttpSession session){
+    public BaseResponse queryAllInCart(HttpSession session, @RequestParam Integer isDel){
         User user = (User) session.getAttribute("user");
-        List<ShopCart> shopCarts = shopCartMapper.selectByPrimaryKey(user.getId());
+        List<ShopCart> shopCarts = shopCartMapper.selectByPrimaryKey(user.getId(),isDel);
         return BaseResponse.success(shopCarts);
     }
 
@@ -244,12 +288,28 @@ public class GoodsController {
 
     }
 
+    /**
+     * 删除购物车中的商品
+     * @param req
+     * @return
+     */
     @PostMapping("/goods/delShopCart.do")
     public BaseResponse delShopCart(@RequestBody List<ShopCart> req){
         for(ShopCart cart:req){
             shopCartMapper.deleteByPrimaryKey(cart.getId());
         }
         return BaseResponse.success("删除成功！");
+    }
+
+    /**
+     * 删除长账单
+     * @param id
+     * @return
+     */
+    @PostMapping("/goods/delOrders.do")
+    public BaseResponse delOrders(@RequestParam Integer id){
+        shopCartMapper.deleteByPrimaryKey(id);
+        return BaseResponse.success();
     }
 
 

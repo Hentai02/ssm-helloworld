@@ -15,7 +15,8 @@
 }
 
 .image {
-    width: 100%;
+    width: 191px;
+    height: 191px;
     display: block;
     /*padding: 20px;*/
 }
@@ -34,9 +35,11 @@
     padding: 14px;
 }
 .card-goods-name{
-    height: 40px;font-size: 12px;
+    height: 40px;
+    font-size: 12px;
     line-height: 20px;
     overflow: hidden;
+    white-space: break-spaces;
     -webkit-box-orient: vertical;
 }
 .card-goods-price{

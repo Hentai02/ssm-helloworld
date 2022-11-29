@@ -83,10 +83,18 @@ public class PagePathController {
             start = end;
             end = page_size * page;
         }
-        List<Goods> goods = goodsService.queryAllGoods(start, end, cat);
+        if (cat < 1000){
+            List<Goods> goods = goodsService.queryAllGoods(start, end, 0,cat);
+            model.addAttribute("goods_list",goods);
+            model.addAttribute("current_page",page);
+            model.addAttribute("total",total);
+            return "list";
+        }
+        List<Goods> goods = goodsService.queryAllGoods(start, end, cat,null);
         model.addAttribute("goods_list",goods);
         model.addAttribute("current_page",page);
         model.addAttribute("total",total);
+
         logger.debug("总条目：" + total + ",总页数：" + page_count + ",开始：" + start + ",结束：" + end);
         logger.debug("总条目：" + Arrays.toString(goods.toArray()));
         return "list";
@@ -99,8 +107,10 @@ public class PagePathController {
      * @return
      */
     @GetMapping("goods/{id}.html")
-    public String goodsDetail(@PathVariable Integer id,Model model){
+    public String goodsDetail(@PathVariable() Integer id,Model model){
         Goods goods = goodsService.getGoods(id);
+        goods.setView(goods.getView() + 1);
+        goodsService.updateGoodsInfo(goods);
         List<GoodsCover> goodsCovers = goodsCoverService.selectAll(id);
         List<GoodsComment> goodsComments = goodsCommentService.queryBygId(id);
         model.addAttribute(goods);
@@ -109,6 +119,11 @@ public class PagePathController {
         return "goods_detail";
     }
 
+    /**
+     * 购物车
+     * @param session
+     * @return
+     */
     @GetMapping("goods/cart.html")
     public String shopCart(HttpSession session){
         User user = (User) session.getAttribute("user");
@@ -116,5 +131,25 @@ public class PagePathController {
             return "shop_cart";
         }
         return "redirect:/app/";
+    }
+
+    /**
+     * 我的订单
+     * @return
+     */
+    @GetMapping("goods/orders.html")
+    public String orders(HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if (user != null){
+            return "orders";
+        }
+        return "redirect:/app/";
+    }
+
+    @GetMapping("/goods/search.html")
+    public String searchGoods(@RequestParam(name = "search",defaultValue = "") String search,Model model){
+        List<Goods> goods = goodsService.searchGoods(search);
+        model.addAttribute("goods_list",goods);
+        return "search";
     }
 }

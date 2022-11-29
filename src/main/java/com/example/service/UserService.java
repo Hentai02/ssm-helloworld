@@ -26,6 +26,11 @@ public class UserService implements UserMapper {
     }
 
     @Override
+    public int updateUserAddress(User user) {
+        return userMapper.updateUserAddress(user);
+    }
+
+    @Override
     public int changeUserStatus(int status,int id) {
         return userMapper.changeUserStatus(status,id);
     }

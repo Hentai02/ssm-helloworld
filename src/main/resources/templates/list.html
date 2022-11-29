@@ -26,9 +26,9 @@
 									<el-link th:href="${item.id} + '.html'" target="_blank" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
 											<img class="image" th:if="${item.cover} != 404"
-												th:src="'/data/goods/' + ${item.id} + '/cover/' + ${item.cover} + '.jpg'">
+												th:src="${item.cover}">
 											<img class="image" th:if="${item.cover} == 404"
-												th:src="'/data/goods/' + ${item.cover} + '.jpg'">
+												th:src="${item.cover}">
 											<div class="card-goods">
 												<p th:text="${item.name}" class="card-goods-name"></p>
 												<p th:text="${item.price}" class="card-goods-price"></p>
@@ -46,7 +46,7 @@
 							@current-change="table_goods_page_change" th::total='${total}' layout="prev, pager, next">
 						</el-pagination>
 					</div>
-					<!-- 分页控件 start -->
+					<!-- 分页控件 end -->
 				</el-main>
 				<!-- 脚注 start -->
 				<el-footer>Footer</el-footer>
@@ -64,11 +64,14 @@
 			},
 			methods: {
 				handleSelect(key, keyPath) {
-					if (key === "7-1") {
-						location.href = '/'
-					} else if (key === '7-6') {
-
+					if (key === "7-6") {
+						H.rest('/app/user/logout.do', null, function(ret) {
+							location.href = '/app/'
+						})
 					}
+				},
+				handleSearch(){
+					location.href = "/app/goods/search.html?search=" + app.search_input;
 				},
 				table_goods_page_change(val) {
 					const parm = get_parameter();
