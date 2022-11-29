@@ -274,7 +274,7 @@
 						<template v-for="(item, index) in dayGoods">
 							<el-col :span="4">
 								<div class="grid-content">
-									<el-link :href="'goods/' + item.id + '.html'" target="_blank" :underline="false">
+									<el-link :href="'goods/' + item.id + '.html'" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
 											<img :src="item.cover"
 												 class="image">
@@ -296,7 +296,7 @@
 						<template v-for="item in eventGoods">
 							<el-col :span="4">
 								<div class="grid-content">
-									<el-link :href="'goods/' + item.id + '.html'" target="_blank" :underline="false">
+									<el-link :href="'goods/' + item.id + '.html'" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
 											<img :src="item.cover"
 												 class="image">
@@ -315,13 +315,13 @@
 					<!-- 猜你喜欢 start -->
 					<el-image src="img/5edc2b84c2367ab8.jpg" fit="contain"></el-image>
 					<el-divider content-position="right">
-						<el-link href="/app/goods/list.html?cat=1001" target="_blank">更多</el-link>
+						<el-link href="/app/goods/list.html?cat=1001">更多</el-link>
 					</el-divider>
 					<el-row type="flex" class="row-bg" justify="space-between" style="flex-wrap: wrap;">
 						<template v-for="item in likeGoods">
 							<el-col style="margin: 20px 10px" :span="4">
 								<div class="grid-content">
-									<el-link :href="'goods/' + item.id + '.html'" target="_blank" :underline="false">
+									<el-link :href="'goods/' + item.id + '.html'" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
 <!--											<img :src="['/data/goods/' + item.id + '/cover/' + item.cover + '.jpg']"-->
 <!--												class="image">-->

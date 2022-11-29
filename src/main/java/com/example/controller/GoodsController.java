@@ -1,15 +1,12 @@
 package com.example.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.mapper.GoodsCommentMapper;
+import com.example.mapper.GoodsMapper;
 import com.example.mapper.GoodsSubCategoryMapper;
 import com.example.mapper.ShopCartMapper;
 import com.example.pojo.*;
-import com.example.service.GoodsCommentService;
-import com.example.service.GoodsService;
-import com.example.service.GoodsSubCategoryService;
 import org.apache.commons.io.FileUtils;
-import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +23,12 @@ public class GoodsController {
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Resource
-    private GoodsService goodsService;
+    private GoodsMapper goodsMapper;
     @Resource
-    private GoodsSubCategoryService goodsSubCategoryService;
+    private GoodsSubCategoryMapper goodsSubCategoryMapper;
 
     @Resource
-    private GoodsCommentService goodsCommentService;
+    private GoodsCommentMapper goodsCommentMapper;
 
     @Resource
     private ShopCartMapper shopCartMapper;
@@ -43,9 +40,9 @@ public class GoodsController {
      */
     @PostMapping("/goods/Subcategory.do")
     public BaseResponse querySubcategory(@RequestParam Integer gCid){
-        List<GoodsSubcategory> goodsSubCategory = goodsSubCategoryService.querySubCategory(gCid);
+        List<GoodsSubcategory> goodsSubCategory = goodsSubCategoryMapper.querySubCategory(gCid);
         logger.error(gCid);
-        return BaseResponse.success(goodsSubCategoryService.querySubCategory(gCid));
+        return BaseResponse.success(goodsSubCategoryMapper.querySubCategory(gCid));
     }
 
     /**
@@ -55,7 +52,7 @@ public class GoodsController {
      */
     @PostMapping("/goods/queryGoods.do")
     public BaseResponse queryGoods(@RequestParam int gSubCid){
-        List<Goods> goods = goodsService.queryGoods(gSubCid);
+        List<Goods> goods = goodsMapper.queryGoods(gSubCid);
         return BaseResponse.success(goods);
     }
 
@@ -65,7 +62,7 @@ public class GoodsController {
      */
     @PostMapping("/goods/queryLikeGoods.do")
     public BaseResponse queryLikeGoods(){
-        List<Goods> goods = goodsService.likeGoods();
+        List<Goods> goods = goodsMapper.likeGoods();
         return BaseResponse.success(goods);
     }
 
@@ -78,7 +75,7 @@ public class GoodsController {
     public BaseResponse queryAllGoods(@RequestParam int current_page){
         int start = 0;
         int end = 10;
-        int total = goodsService.getGoodsCount();
+        int total = goodsMapper.getGoodsCount();
         int page_size = 10;
         int page_count = total/page_size+1;
         if (current_page != 1){
@@ -86,8 +83,8 @@ public class GoodsController {
             end = current_page * page_size;
         }
         JSONObject jsonObject = new JSONObject();
-        List<Goods> goods = goodsService.queryAllGoods(start,end,0,null);
-        List<Goods> srcGoods = goodsService.queryAllGoods(-1,-1,0,null);
+        List<Goods> goods = goodsMapper.queryAllGoods(start,end,0,null);
+        List<Goods> srcGoods = goodsMapper.queryAllGoods(-1,-1,0,null);
         jsonObject.put("goods",goods);
         jsonObject.put("total",total);
         jsonObject.put("page_count",page_count);
@@ -102,7 +99,7 @@ public class GoodsController {
      */
     @PostMapping("/goods/queryHotGoods.do")
     public BaseResponse queryHotGoods(){
-        List<Goods> goods = goodsService.queryHotGoods();
+        List<Goods> goods = goodsMapper.queryHotGoods();
         return BaseResponse.success(goods);
     }
 
@@ -113,7 +110,7 @@ public class GoodsController {
      */
     @PostMapping("/goods/deleteGoods.do")
     public BaseResponse deleteGoods(@RequestParam int id){
-        int row = goodsService.changeGoodsStatus(-1,id);
+        int row = goodsMapper.changeGoodsStatus(-1,id);
         return BaseResponse.success();
     }
 
@@ -126,11 +123,11 @@ public class GoodsController {
      */
     @PostMapping("/goods/shelvesGoods.do")
     public BaseResponse shelvesGoods(@RequestParam int id){
-        int row = goodsService.changeGoodsStatus(0,id);
-        Goods goods = goodsService.getGoods(id);
+        int row = goodsMapper.changeGoodsStatus(0,id);
+        Goods goods = goodsMapper.getGoods(id);
         if (goods.getCount() <= 0){
             goods.setCount(1);
-            goodsService.updateGoodsInfo(goods);
+            goodsMapper.updateGoodsInfo(goods);
         }
         return BaseResponse.success();
     }
@@ -143,7 +140,7 @@ public class GoodsController {
      */
     @PostMapping("/goods/updateGoodsInfo.do")
     public BaseResponse updateGoodsInfo(HttpSession session, @RequestBody Goods goods){
-        Goods srcGoods = goodsService.getGoods(goods.getId());
+        Goods srcGoods = goodsMapper.getGoods(goods.getId());
         User user = (User) session.getAttribute("user");
         UploadInfo uploadInfo = (UploadInfo) session.getAttribute("uploadInfo");
         if (uploadInfo != null){
@@ -153,7 +150,7 @@ public class GoodsController {
                     FileUtils.delete(uploadInfo.tmpFile);
                 }
                 File srcFile = new File(dir,"/data/goods/" + goods.getId() + "/" + uploadInfo.tmpFileName);
-                Goods goodsed = goodsService.getGoods(goods.getId());
+                Goods goodsed = goodsMapper.getGoods(goods.getId());
                 File fileed = new File(dir, goodsed.getCover());
                 if (fileed.exists()){
                     FileUtils.delete(fileed);
@@ -178,7 +175,7 @@ public class GoodsController {
 //            logger.error("用没有更改商品信息");
 //            return BaseResponse.success("不改就别点确定！");
 //        }
-        goodsService.updateGoodsInfo(goods);
+        goodsMapper.updateGoodsInfo(goods);
         return BaseResponse.success("修改成功！");
     }
 
@@ -211,7 +208,7 @@ public class GoodsController {
         if (goods.getCover() == null){
             goods.setCover("/app/data/goods/404");
         }
-        int row = goodsService.insertGoods(goods);
+        int row = goodsMapper.insertGoods(goods);
         logger.error(row);
         return BaseResponse.success();
     }
@@ -232,7 +229,7 @@ public class GoodsController {
             goodsComment.setIsDel(0);
             goodsComment.setCreateTime(new Date());
             goodsComment.setCreateBy(session_user.getUsername());
-            goodsCommentService.insert(goodsComment);
+            goodsCommentMapper.insert(goodsComment);
             logger.debug("done");
             return BaseResponse.success("发表成功！");
         }else {

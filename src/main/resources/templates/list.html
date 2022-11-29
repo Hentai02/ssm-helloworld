@@ -23,7 +23,7 @@
 						<template th:each="item : ${goods_list}">
 							<el-col style="margin: 20px 10px" :span="4">
 								<div class="grid-content">
-									<el-link th:href="${item.id} + '.html'" target="_blank" :underline="false">
+									<el-link th:href="${item.id} + '.html'" :underline="false">
 										<el-card :body-style="{ padding: '0px' }">
 											<img class="image" th:if="${item.cover} != 404"
 												th:src="${item.cover}">

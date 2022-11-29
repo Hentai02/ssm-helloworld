@@ -30,7 +30,10 @@
                                         width="150">
                                     <template slot-scope="scope">
 <!--                                        <img height="80" :src="['/data/goods/' + scope.row.gId + '/cover/' + scope.row.cover + '.jpg']">-->
-                                        <img height="80" :src="scope.row.cover">
+                                        <el-link :href="'/app/goods/' + scope.row.gId + '.html'">
+                                            <img height="80" :src="scope.row.cover">
+                                        </el-link>
+
                                     </template>
                                 </el-table-column>
                                 <el-table-column

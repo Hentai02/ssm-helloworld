@@ -42,7 +42,7 @@
 					<el-row :gutter="20">
 						<!-- 商品图片轮播图 start -->
 						<el-col :span="10">
-							<div class="grid-content bg-purple">
+							<div style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)" class="grid-content bg-purple">
 <!--								<template>-->
 <!--									<el-carousel style="height: 450px" indicator-position="outside">-->
 <!--										<el-carousel-item style="height: 450px" th:each="item : ${goodsCoverList}">-->
@@ -87,7 +87,9 @@
 					<p></p>
 					<el-row>
 						<el-col :span="24">
+
 							<div class="grid-content bg-purple-dark">
+
 								<el-collapse v-model="activeNames">
 									<!-- 商品介绍 start -->
 									<el-collapse-item title="商品介绍" name="1">
@@ -155,7 +157,9 @@
 										</el-collapse-item>
 								<!-- 评论 end -->
 								</el-collapse>
+
 							</div>
+
 						</el-col>
 					</el-row>
 

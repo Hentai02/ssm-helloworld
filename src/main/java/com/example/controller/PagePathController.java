@@ -1,12 +1,12 @@
 package com.example.controller;
 
+import com.example.mapper.GoodsCommentMapper;
+import com.example.mapper.GoodsCoverMapper;
+import com.example.mapper.GoodsMapper;
 import com.example.pojo.Goods;
 import com.example.pojo.GoodsComment;
 import com.example.pojo.GoodsCover;
 import com.example.pojo.User;
-import com.example.service.GoodsCommentService;
-import com.example.service.GoodsCoverService;
-import com.example.service.GoodsService;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,13 +23,13 @@ public class PagePathController {
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Resource
-    GoodsService goodsService;
+    GoodsMapper goodsMapper;
 
     @Resource
-    GoodsCoverService goodsCoverService;
+    GoodsCoverMapper goodsCoverMapper;
 
     @Resource
-    GoodsCommentService goodsCommentService;
+    GoodsCommentMapper goodsCommentMapper;
 
     /**
      * 首页
@@ -68,6 +67,8 @@ public class PagePathController {
     /**
      * 商品类别
      * @param cat
+     * @param page
+     * @param model
      * @return
      */
     @GetMapping("goods/list.html")
@@ -75,7 +76,7 @@ public class PagePathController {
                             @RequestParam(name = "page",defaultValue = "1")  int page,
                             Model model){
         int page_size = 10;
-        int total = goodsService.getGoodsCount();
+        int total = goodsMapper.getGoodsCount();
         int page_count = total/page_size+1;
         int start = 0;
         int end = page_size;
@@ -84,13 +85,13 @@ public class PagePathController {
             end = page_size * page;
         }
         if (cat < 1000){
-            List<Goods> goods = goodsService.queryAllGoods(start, end, 0,cat);
+            List<Goods> goods = goodsMapper.queryAllGoods(start, end, 0,cat);
             model.addAttribute("goods_list",goods);
             model.addAttribute("current_page",page);
             model.addAttribute("total",total);
             return "list";
         }
-        List<Goods> goods = goodsService.queryAllGoods(start, end, cat,null);
+        List<Goods> goods = goodsMapper.queryAllGoods(start, end, cat,null);
         model.addAttribute("goods_list",goods);
         model.addAttribute("current_page",page);
         model.addAttribute("total",total);
@@ -108,11 +109,11 @@ public class PagePathController {
      */
     @GetMapping("goods/{id}.html")
     public String goodsDetail(@PathVariable() Integer id,Model model){
-        Goods goods = goodsService.getGoods(id);
+        Goods goods = goodsMapper.getGoods(id);
         goods.setView(goods.getView() + 1);
-        goodsService.updateGoodsInfo(goods);
-        List<GoodsCover> goodsCovers = goodsCoverService.selectAll(id);
-        List<GoodsComment> goodsComments = goodsCommentService.queryBygId(id);
+        goodsMapper.updateGoodsInfo(goods);
+        List<GoodsCover> goodsCovers = goodsCoverMapper.selectAll(id);
+        List<GoodsComment> goodsComments = goodsCommentMapper.queryBygId(id);
         model.addAttribute(goods);
         model.addAttribute(goodsCovers);
         model.addAttribute(goodsComments);
@@ -146,9 +147,15 @@ public class PagePathController {
         return "redirect:/app/";
     }
 
+    /**
+     * 搜索页面
+     * @param search
+     * @param model
+     * @return
+     */
     @GetMapping("/goods/search.html")
     public String searchGoods(@RequestParam(name = "search",defaultValue = "") String search,Model model){
-        List<Goods> goods = goodsService.searchGoods(search);
+        List<Goods> goods = goodsMapper.searchGoods(search);
         model.addAttribute("goods_list",goods);
         return "search";
     }

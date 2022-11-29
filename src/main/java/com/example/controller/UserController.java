@@ -1,12 +1,10 @@
 package com.example.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.example.mapper.UserMapper;
 import com.example.pojo.BaseResponse;
 import com.example.pojo.UploadInfo;
 import com.example.pojo.User;
-import com.example.service.UserService;
 import org.apache.commons.io.FileUtils;
-import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +14,8 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 public class UserController {
@@ -26,7 +23,7 @@ public class UserController {
     Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Resource
-    private UserService userService;
+    private UserMapper userMapper;
 
 
     /**
@@ -39,7 +36,7 @@ public class UserController {
     public BaseResponse reg(@RequestParam String username,
                             @RequestParam String password){
 
-        User data = userService.userVerify(username, null);
+        User data = userMapper.userVerify(username, null);
         if (data != null)return BaseResponse.fail("用户名已被使用！");
         User user = new User();
         user.setNickname(username);
@@ -55,7 +52,7 @@ public class UserController {
         user.setCreateTime(new Date());
         user.setUpdateTime(new Date());
         user.setUpdateBy(username);
-        userService.insert(user);
+        userMapper.insert(user);
         return BaseResponse.success("注册成功！",201);
     }
 
@@ -71,7 +68,7 @@ public class UserController {
                                      HttpSession session){
         password = DigestUtils.md5DigestAsHex((password).getBytes());
         try{
-            User user = userService.userVerify(username, password);
+            User user = userMapper.userVerify(username, password);
             if (user != null){
                 if (user.getIsDel() < 0)
                     return BaseResponse.fail("账号封禁中！");
@@ -117,7 +114,7 @@ public class UserController {
      */
     @PostMapping("/user/getAllUser.do")
     public BaseResponse getAllUser(){
-        List<User> users = userService.getUser(0);
+        List<User> users = userMapper.getUser(0);
         return BaseResponse.success(users);
     }
 
@@ -129,7 +126,7 @@ public class UserController {
     @PostMapping("/user/updateUserInfo.do")
     public BaseResponse updateUserInfo(HttpSession session,@RequestBody User user){
         User sessionUser = (User) session.getAttribute("user");
-        User srcUser = userService.getUser(user.getId()).get(0);
+        User srcUser = userMapper.getUser(user.getId()).get(0);
         UploadInfo uploadInfo = (UploadInfo) session.getAttribute("uploadInfo");
         if (uploadInfo != null){
             File dir = uploadInfo.tmpFile.getParentFile().getParentFile();
@@ -162,7 +159,7 @@ public class UserController {
         }
         user.setUpdateTime(new Date());
         user.setCreateBy(sessionUser.getUsername());
-        int row = userService.updateUserInfo(user);
+        int row = userMapper.updateUserInfo(user);
         if (row == 1){
             if (sessionUser.getId().equals(user.getId())){
                 session.removeAttribute("user");
@@ -186,7 +183,7 @@ public class UserController {
         sessionUser.setAddress(user.getAddress());
         sessionUser.setUpdateTime(new Date());
         sessionUser.setCreateBy(sessionUser.getUsername());
-        userService.updateUserAddress(sessionUser);
+        userMapper.updateUserAddress(sessionUser);
         return BaseResponse.success("修改成功！");
     }
 
@@ -200,7 +197,7 @@ public class UserController {
         if (id == 1){
             return BaseResponse.fail("不能封禁管理员账号！");
         }
-        userService.changeUserStatus(status,id);
+        userMapper.changeUserStatus(status,id);
         return BaseResponse.success();
     }
 }
