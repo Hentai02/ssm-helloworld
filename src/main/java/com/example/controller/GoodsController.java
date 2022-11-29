@@ -1,11 +1,11 @@
 package com.example.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.mapper.GoodsSubCategoryMapper;
-import com.example.pojo.BaseResponse;
-import com.example.pojo.Goods;
-import com.example.pojo.GoodsSubcategory;
-import com.example.pojo.User;
+import com.example.mapper.ShopCartMapper;
+import com.example.pojo.*;
+import com.example.service.GoodsCommentService;
 import com.example.service.GoodsService;
 import com.example.service.GoodsSubCategoryService;
 import org.apache.log4j.Logger;
@@ -25,6 +25,12 @@ public class GoodsController {
     private GoodsService goodsService;
     @Resource
     private GoodsSubCategoryService goodsSubCategoryService;
+
+    @Resource
+    private GoodsCommentService goodsCommentService;
+
+    @Resource
+    private ShopCartMapper shopCartMapper;
 
     /**
      * 获取商品子类别
@@ -97,6 +103,8 @@ public class GoodsController {
         return BaseResponse.success();
     }
 
+    // TODO: 更新和上架合并为一个controller
+
     /**
      * 上架商品
      * @param id
@@ -113,7 +121,6 @@ public class GoodsController {
         return BaseResponse.success();
     }
 
-    // TODO:   更新和上架可以合并为一个方法
 
     /**
      * 更新商品
@@ -153,6 +160,96 @@ public class GoodsController {
         int row = goodsService.insertGoods(goods);
         logger.error(row);
         return BaseResponse.success();
+    }
+
+    /**
+     * 发布评论
+     * @param comment
+     * @return
+     */
+    @PostMapping("/goods/insertGoodsComment.do")
+    public BaseResponse insertComment(@RequestParam Integer gId,@RequestParam String comment,HttpSession session){
+        User session_user = (User) session.getAttribute("user");
+        if (session_user != null){
+            GoodsComment goodsComment = new GoodsComment();
+            goodsComment.setContent(comment);
+            goodsComment.setUid(session_user.getId());
+            goodsComment.setgId(gId);
+            goodsComment.setIsDel(0);
+            goodsComment.setCreateTime(new Date());
+            goodsComment.setCreateBy(session_user.getUsername());
+            goodsCommentService.insert(goodsComment);
+            logger.debug("done");
+            return BaseResponse.success("发表成功！");
+        }else {
+            return BaseResponse.fail("请先登录！");
+        }
+
+    }
+
+
+    /**
+     * 加入购物车
+     * @param count
+     * @param gId
+     * @param session
+     * @return
+     */
+    @PostMapping("goods/insertShopCart.do")
+    public BaseResponse insertCart(@RequestParam Integer count,@RequestParam Integer gId,HttpSession session){
+        User session_user = (User) session.getAttribute("user");
+        ShopCart shopCart = new ShopCart();
+        ShopCart goodsOne = shopCartMapper.queryBygId(gId);
+        if (session_user != null){
+            if (goodsOne != null && goodsOne.getIsDel() >= 0){
+                shopCartMapper.updateByPrimaryKey(goodsOne.getCount() + count,gId,null);
+            }else{
+                shopCart.setUid(session_user.getId());
+                shopCart.setCreateBy(session_user.getUsername());
+                shopCart.setCount(count);
+                shopCart.setgId(gId);
+                shopCart.setIsDel(1);
+                shopCart.setCreateTime(new Date());
+                shopCartMapper.insert(shopCart);
+            }
+            return BaseResponse.success("已加入购物车！");
+        }
+        return BaseResponse.fail("请先登录！");
+    }
+
+
+    /**
+     * 获取购物车中的商品
+     * @param session
+     * @return
+     */
+    @PostMapping("/goods/shopCartAll.do")
+    public BaseResponse queryAllInCart(HttpSession session){
+        User user = (User) session.getAttribute("user");
+        List<ShopCart> shopCarts = shopCartMapper.selectByPrimaryKey(user.getId());
+        return BaseResponse.success(shopCarts);
+    }
+
+    /**
+     * 模拟交易
+     * @param req
+     * @return
+     */
+    @PostMapping("/goods/shopCartClear.do")
+    public BaseResponse goodsSettlement(@RequestBody List<ShopCart> req){
+        for(ShopCart cart:req){
+            shopCartMapper.updateByPrimaryKey(null,cart.getgId(),-1);
+        }
+        return BaseResponse.success("支付成功！");
+
+    }
+
+    @PostMapping("/goods/delShopCart.do")
+    public BaseResponse delShopCart(@RequestBody List<ShopCart> req){
+        for(ShopCart cart:req){
+            shopCartMapper.deleteByPrimaryKey(cart.getId());
+        }
+        return BaseResponse.success("删除成功！");
     }
 
 

@@ -1,105 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>商品类别</title>
-    <script th:src="@{/js/jquery.js}"></script>
-    <script th:src="@{/js/vue.js}"></script>
-    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
-    <script th:src="@{/element-ui/index.js}"></script>
-    <link rel="stylesheet" th:href="@{/css/container.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common.css}">
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8">
+		<title>商品类别</title>
+		<script th:src="@{/js/jquery.js}"></script>
+		<script th:src="@{/js/vue.js}"></script>
+		<link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+		<script th:src="@{/element-ui/index.js}"></script>
+		<link rel="stylesheet" th:href="@{/css/container.css}">
+		<link rel="stylesheet" th:href="@{/css/header.css}">
+		<link rel="stylesheet" th:href="@{/css/common.css}">
+	</head>
+	<body>
+		<div id="app">
+			<el-container>
+				<!-- 头部导航栏 start -->
+				<el-header th:replace="~{header :: copy}">Header</el-header>
+				<!-- 头部导航栏 end -->
+				<el-main>
+					<!-- 商品列表 start  -->
+					<el-row type="flex" class="row-bg" justify="space-start" style="flex-wrap: wrap;">
+						<template th:each="item : ${goods_list}">
+							<el-col style="margin: 20px 10px" :span="4">
+								<div class="grid-content">
+									<el-link th:href="${item.id} + '.html'" target="_blank" :underline="false">
+										<el-card :body-style="{ padding: '0px' }">
+											<img class="image" th:if="${item.cover} != 404"
+												th:src="'/data/goods/' + ${item.id} + '/cover/' + ${item.cover} + '.jpg'">
+											<img class="image" th:if="${item.cover} == 404"
+												th:src="'/data/goods/' + ${item.cover} + '.jpg'">
+											<div class="card-goods">
+												<p th:text="${item.name}" class="card-goods-name"></p>
+												<p th:text="${item.price}" class="card-goods-price"></p>
+											</div>
+										</el-card>
+									</el-link>
+								</div>
+							</el-col>
+						</template>
+					</el-row>
+					<!-- 商品列表 end  -->
+					<!-- 分页控件 start -->
+					<div class="block">
+						<el-pagination :hide-on-single-page="true" th::current-page="${current_page}" :page-size="20"
+							@current-change="table_goods_page_change" th::total='${total}' layout="prev, pager, next">
+						</el-pagination>
+					</div>
+					<!-- 分页控件 start -->
+				</el-main>
+				<!-- 脚注 start -->
+				<el-footer>Footer</el-footer>
+				<!-- 脚注 end -->
+			</el-container>
+		</div>
+	</body>
+	<script>
+		const app = new Vue({
+			el: '#app',
+			data: {
+				activeIndex: '1',
+				activeIndex2: '1',
+				search_input: ''
+			},
+			methods: {
+				handleSelect(key, keyPath) {
+					if (key === "7-1") {
+						location.href = '/'
+					} else if (key === '7-6') {
 
+					}
+				},
+				table_goods_page_change(val) {
+					const parm = get_parameter();
+					console.log(`当前页: ${val}`);
+					location.href = '/app/goods/list.html?cat=' + parm.cat + '&page=' + val
+				},
+			}
+		})
 
-<div id="app">
-
-    <el-container>
-        <el-header th:replace="~{header :: copy}">Header</el-header>
-
-        <el-main>
-            <el-row type="flex" class="row-bg" justify="space-start" style="flex-wrap: wrap;">
-                <template th:each="item : ${goods_list}">
-                    <el-col style="margin: 20px 10px" :span="4"><div class="grid-content">
-                        <el-link th:href="${item.id} + '.html'" target="_blank">
-                            <el-card  :body-style="{ padding: '0px' }">
-                                <img class="image" th:if="${item.cover} != 404" th:src="'/data/goods/' + ${item.id} + '/cover/' + ${item.cover} + '.jpg'">
-                                <img class="image" th:if="${item.cover} == 404" th:src="'/data/goods/' + ${item.cover} + '.jpg'">
-                                <div class="card-goods">
-                                    <p th:text="${item.name}" class="card-goods-name" ></p>
-                                    <p th:text="${item.price}" class="card-goods-price"></p>
-                                </div>
-                            </el-card>
-                        </el-link>
-                    </div></el-col>
-                </template>
-            </el-row>
-
-
-            <div class="block">
-                <el-pagination
-                    :hide-on-single-page="true"
-                    th::current-page="${current_page}"
-                    :page-size="20"
-                    @current-change="table_goods_page_change"
-                    th::total='${total}'
-                    layout="prev, pager, next">
-            </el-pagination>
-            </div>
-        </el-main>
-
-        <el-footer>Footer</el-footer>
-    </el-container>
-</div>
-
-
-
-
-</body>
-<script>
-    const app = new Vue({
-        el: '#app',
-        data: {
-            activeIndex: '1',
-            activeIndex2: '1',
-            search_input: ''
-        },methods: {
-            handleSelect(key, keyPath) {
-                if(key === "7-1"){
-                    location.href = '/'
-                }else if(key === '7-6'){
-
-                }
-            },
-            table_goods_page_change(val) {
-                const parm = get_parameter();
-                console.log(`当前页: ${val}`);
-                location.href = '/app/goods/list.html?cat=' + parm.cat + '&page=' + val
-            },
-        }
-    })
-    
-    function get_parameter() {
-        const href = location.href
-        const index = href.indexOf('?');
-        const result = {}
-        if(index !== -1){
-            const parameter = href.substring(index + 1, href.length)
-            if (parameter.indexOf('&') !== -1){
-                const req = parameter.split('&')
-                for (let i = 0; i < req.length; i++){
-                    if (req[i].split('=')[0].indexOf('cat') !== -1){
-                        result.cat = req[i].split('=')[1]
-                    }
-                }
-                console.log(result)
-            }else{
-                result.cat = parameter.split('=')[1]
-            }
-        }
-        return result;
-    }
-</script>
+		function get_parameter() {
+			const href = location.href
+			const index = href.indexOf('?');
+			const result = {}
+			if (index !== -1) {
+				const parameter = href.substring(index + 1, href.length)
+				if (parameter.indexOf('&') !== -1) {
+					const req = parameter.split('&')
+					for (let i = 0; i < req.length; i++) {
+						if (req[i].split('=')[0].indexOf('cat') !== -1) {
+							result.cat = req[i].split('=')[1]
+						}
+					}
+					console.log(result)
+				} else {
+					result.cat = parameter.split('=')[1]
+				}
+			}
+			return result;
+		}
+	</script>
 </html>

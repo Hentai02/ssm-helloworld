@@ -14,6 +14,6 @@
 
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.example.mapper" targetProject="src/main/java"/>
 
-        <table tableName="ss_comment" />
+        <table tableName="ss_shop_cart" />
     </context>
 </generatorConfiguration>

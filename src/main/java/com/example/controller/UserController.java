@@ -138,11 +138,4 @@ public class UserController {
         userService.changeUserStatus(status,id);
         return BaseResponse.success();
     }
-
-    // TODO:   封禁和解封可以合并为一个方法
-
-
-
-
-
 }

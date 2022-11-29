@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/vue.js}"></script>
+    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+    <script th:src="@{/element-ui/index.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/container.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+    <div id="app">
+        <el-container>
+            <!-- 头部导航栏 start -->
+            <div th:replace="~{header :: copy}"></div>
+            <!-- 头部导航栏 end -->
+            <el-main>
+                <el-row :gutter="20">
+                    <el-card style="text-align: end" shadow="hover">
+                        <el-descriptions title="用户信息">
+                            <el-descriptions-item th:text="${session.user.username}" label="用户名">kooriookami</el-descriptions-item>
+                            <el-descriptions-item th:text="${session.user.phone}" label="手机号">18100000000</el-descriptions-item>
+                            <el-descriptions-item th:text="${session.user.address}" label="联系地址">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
+                        </el-descriptions>
+                        <el-button type="text">修改地址</el-button>
+                    </el-card>
+                </el-row>
+                <el-row :gutter="20">
+                    <template>
+                        <el-table
+                                @selection-change="handleSelectionChange"
+                                ref="multipleTable"
+                                :data="goods_in_cart"
+                                tooltip-effect="dark"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column
+                                    label="商品"
+                                    prop="cover">
+                                <template slot-scope="scope">
+                                    <img height="80" :src="['/data/goods/' + scope.row.gId + '/cover/' + scope.row.cover + '.jpg']"
+                                         >
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="商品名称"
+                                    prop="name">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="price"
+                                    label="价格"
+                                    width="200">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="count"
+                                    label="数量"
+                                    width="200">
+                                <template slot-scope="scope">
+                                    <el-input-number @change="handleChange" size="mini" v-model="scope.row.count" :min="1" :max="99"></el-input-number>
+                                </template>
+
+                            </el-table-column>
+
+                            <el-table-column align="right" label="操作" width="200">
+                                <template slot="header" slot-scope="scope">
+                                    <el-input @input="table_goods_search_input"
+                                              v-model="table_goods_search_text" size="small"
+                                              placeholder="输入关键字搜索" />
+                                </template>
+                                <template slot-scope="scope">
+                                    <el-button size="mini"
+                                               @click="handleEdit_table_goods(scope.$index, scope.row)">编辑
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                            </el-table>
+                    </template>
+                </el-row>
+                <el-row style="text-align: end">
+<!--                    <el-button>默认按钮</el-button>-->
+<!--                    <el-button type="primary">主要按钮</el-button>-->
+<!--                    <el-button type="success">成功按钮</el-button>-->
+<!--                    <el-button type="info">信息按钮</el-button>-->
+<!--                    <el-button type="warning">警告按钮</el-button>-->
+                    <h2 style="font-size: 20px;margin: 20px" class="card-goods-price">￥ {{total}}</h2>
+                    <el-button type="text" @click="handleShopCartClear">结算</el-button>
+                    <el-button type="text" @click="handleDelShopCart">删除</el-button>
+                </el-row>
+            </el-main>
+            <!-- 脚注 start -->
+            <el-footer>Footer</el-footer>
+            <!-- 脚注 end -->
+        </el-container>
+    </div>
+</body>
+<script th:src="@{/js/hquery.js}"></script>
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            activeIndex: '1',
+            activeIndex2: '1',
+            search_input: '',
+            activeNames: ['1'],
+            goods_comment_input: '',
+            table_goods_search_text:'',
+            count: '',
+            total:0,
+            goods_in_cart:[],
+            multipleSelection: []
+        }, methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+                if (key === "7-1") {
+                    location.href = "/app/user.html"
+                } else if (key === '7-6') {
+                    H.rest('user/logout.do', null, function(ret) {
+                        location.href = '/app/'
+                    })
+                }
+            },
+            handleChange(value) {
+                console.log(value);
+            },
+            handleShopCartClear(){
+                const req = {}
+                req.data = this.multipleSelection
+                H.rest('shopCartClear.do',this.multipleSelection,function (ret) {
+                    app.$message.success(ret.reason);
+                    queryAllInCart()
+                })
+            },
+            handleDelShopCart(){
+                const req = {}
+                req.data = this.multipleSelection
+                H.rest('delShopCart.do',this.multipleSelection,function (ret) {
+                    app.$message.success(ret.reason);
+                    queryAllInCart()
+                })
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+                if (val.length === 0){
+                    this.total = 0
+                }
+                for (let i = 0; i < val.length; i++) {
+                    this.total += val[i].price * val[i].count
+                }
+            },
+            table_goods_search_input(){
+
+            }
+        }
+    })
+
+    function queryAllInCart() {
+        H.form('shopCartAll.do',null,function (ret) {
+            app.goods_in_cart = ret.data
+        })
+    }
+    queryAllInCart()
+
+</script>
+</html>

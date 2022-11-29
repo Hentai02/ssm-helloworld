@@ -1,97 +1,161 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>商品详情</title>
-    <script th:src="@{/js/jquery.js}"></script>
-    <script th:src="@{/js/vue.js}"></script>
-    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
-    <script th:src="@{/element-ui/index.js}"></script>
-    <link rel="stylesheet" th:href="@{/css/container.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common.css}">
-    <style>
-        .el-descriptions__title{
-            text-align: start;
-            color: #666;
-            padding-top: 10px;
-            line-height: 28px;
-            margin-bottom: 5px;
-        }
-    </style>
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8">
+		<title>商品详情</title>
+		<script th:src="@{/js/jquery.js}"></script>
+		<script th:src="@{/js/vue.js}"></script>
+		<link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+		<script th:src="@{/element-ui/index.js}"></script>
+		<link rel="stylesheet" th:href="@{/css/container.css}">
+		<link rel="stylesheet" th:href="@{/css/header.css}">
+		<link rel="stylesheet" th:href="@{/css/common.css}">
+		<style>
+			.el-descriptions__title {
+				text-align: start;
+				color: #666;
+				padding-top: 10px;
+				line-height: 28px;
+				margin-bottom: 5px;
+			}
 
-<div id="app">
-    <el-container>
-        <el-header th:replace="~{header :: copy}">Header</el-header>
-        <el-main>
-            <el-row :gutter="20">
-                <el-col :span="10"><div class="grid-content bg-purple">
-<!--                    <img class="image" th:src="'/data/goods/' + ${goods.id} + '/cover/' + ${goods.cover} + '.jpg'">-->
+			.el-descriptions__text {
+				color: #999;
+				font-size: 13px;
+				/* font-family: '宋体'; */
+				padding-right: 10px;
+			}
 
-                    <template>
-                        <el-carousel style="height: 450px" indicator-position="outside">
-                            <el-carousel-item style="height: 450px" th:each="item : ${goodsCoverList}">
+			.el-descriptions__price {
+				font-size: 22px;
+				color: #e4393c;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<el-container>
+				<!-- 头部导航栏 start -->
+				<div th:replace="~{header :: copy}"></div>
+				<!-- 头部导航栏 end -->
+				<el-main>
+					<el-row :gutter="20">
+						<!-- 商品图片轮播图 start -->
+						<el-col :span="10">
+							<div class="grid-content bg-purple">
+								<template>
+									<el-carousel style="height: 450px" indicator-position="outside">
+										<el-carousel-item style="height: 450px" th:each="item : ${goodsCoverList}">
+											<el-image style="height: 450px" th:src="${item.path}" fit="cover">
+											</el-image>
+										</el-carousel-item>
+									</el-carousel>
+								</template>
+							</div>
+						</el-col>
+						<!-- 商品图片轮播图 end -->
+						<!-- 商品信息 start -->
+						<el-col :span="14">
+							<div class="grid-content bg-purple">
+								<p class="el-descriptions__title" th:text="${goods.name}"></p>
+								<p style="text-align: start">
+									<span class="el-descriptions__text">售 价 </span>
+									<span class="el-descriptions__price" th:text="'￥ ' + ${goods.price}"></span>
+								</p>
+								<p style="text-align: start">
+									<span class="el-descriptions__text">配 送 </span>
+									<span class="el-descriptions__text">由 MANNING 发货, 并提供售后服务.</span>
+								</p>
+								<p style="text-align: start">
+									<span class="el-descriptions__text">服务支持</span>
+									<span class="el-descriptions__text">可配送全球99元免基础运费 自提</span>
+								</p>
+								<p style="text-align: start">
+									<el-input-number size="mini" v-model="count" :min="1" :max="10"></el-input-number>
+									<el-button type="danger" @click="handleInsertShopCart()">加入购物车</el-button>
+								</p>
+								<p style="text-align: start">
+									<span class="el-descriptions__text">温馨提示 · 支持7天无理由退货</span>
+								</p>
+							</div>
+						</el-col>
+						<!-- 商品信息 end -->
+					</el-row>
+					<p></p>
+					<el-row>
+						<el-col :span="24">
+							<div class="grid-content bg-purple-dark">
+								<el-collapse v-model="activeNames">
+									<!-- 商品介绍 start -->
+									<el-collapse-item title="商品介绍" name="1">
+										<div th:text="${goods.desc}">与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
+									</el-collapse-item>
+									<!-- 商品介绍 end -->
+									<!-- 评论 start -->
+										<el-collapse-item th:title="${goodsCommentList} != null ? '评论(' + ${goodsCommentList.size()} + ')': '暂无评论'" name="2">
+											<el-row :gutter="20">
 
-<!--                                <img th:src="${item.path}" >-->
-                                <el-image
-                                        style="height: 450px"
-                                        th:src="${item.path}"
-                                        fit="cover"></el-image>
-                            </el-carousel-item>
-                        </el-carousel>
-                    </template>
+												<el-col :span="21">
+													<div class="grid-content">
+														<el-input placeholder="请输入内容" v-model="goods_comment_input"
+															clearable>
+														</el-input>
+													</div>
+												</el-col>
 
-                </div></el-col>
-                <el-col :span="14"><div class="grid-content bg-purple">
-                    <p class="el-descriptions__title" th:text="${goods.name}"></p>
-                    <p style="text-align: start">
-                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">售 价</span>
-                        <span style="font-size: 22px;color: #e4393c;" th:text="'￥ ' + ${goods.price}"></span>
-                    </p>
+												<el-col :span="2">
+													<div class="grid-content">
+														<el-button @click="submit_goods_comment()">发表评论</el-button>
+													</div>
+												</el-col>
 
-                    <p style="text-align: start">
-                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">配 送</span>
-                        <span style="color: #999;font-size: 13px">由 MANNING 发货, 并提供售后服务.</span>
-                    </p>
+											</el-row>
 
-                    <p style="text-align: start">
-                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">服务支持</span>
-                        <span style="color: #999;font-size: 13px">可配送全球99元免基础运费 自提</span>
-                    </p>
+											<el-divider></el-divider>
 
+											<template th:each="item : ${goodsCommentList} ">
+												<el-row style="text-align: start" :gutter="20">
 
+													<el-col :span="1">
+														<div class="grid-content bg-purple">
+															<div class="block">
+																<el-avatar :size="50" th:src="${item.avatar}">
+																</el-avatar>
+															</div>
+														</div>
+													</el-col>
 
-                    <p style="text-align: start">
-                        <el-input-number v-model="count" :min="1" :max="10" label="描述文字"></el-input-number>
-                        <el-button type="danger">加入购物车</el-button>
-                    </p>
+													<el-col :span="2">
+														<div class="grid-content bg-purple" th:text="${item.nickname}">
+															Hentai
+														</div>
+													</el-col>
 
-                    <p style="text-align: start">
-                        <span style="color: #999;font-size: 13px;font-family: '宋体';padding-right: 10px">温馨提示 ·支持7天无理由退货</span>
-                    </p>
-                </div></el-col>
-            </el-row>
+													<el-col :span="6">
+														<div class="grid-content bg-purple" th:text="${item.content}">
+															评论内容
+														</div>
+													</el-col>
 
-<!--            <el-divider></el-divider>-->
-            <p></p>
+												</el-row>
+												<el-row style="text-align: start" :gutter="20">
 
-            <el-row>
-                <el-col :span="24"><div class="grid-content bg-purple-dark">
-                    <el-collapse v-model="activeNames">
-                        <el-collapse-item title="商品介绍" name="1">
-                            <div th:text="${goods.desc}">与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                        </el-collapse-item>
-                        <el-collapse-item title="评论" name="2">
-                            <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-                            <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-                        </el-collapse-item>
-                    </el-collapse>
-                </div></el-col>
-            </el-row>
+													<el-col :span="3">
+														<div style="font-size: 1px;color: #999"
+															class="grid-content bg-purple" th:text="${#dates.format(item.createTime, 'yyyy-MM-dd HH:mm')}">
+															2020-11-22 00:00
+														</div>
+													</el-col>
+												</el-row>
+											</template>
+										</el-collapse-item>
+								<!-- 评论 end -->
+								</el-collapse>
+							</div>
+						</el-col>
+					</el-row>
 
-        </el-main>
+				</el-main>
         <el-footer>Footer</el-footer>
     </el-container>
 </div>
@@ -110,7 +174,8 @@
 <!--    <p th:text="${goods.createBy}"></p>-->
 
 </body>
-<script>
+<script th:src="@{/js/hquery.js}"></script>
+<script th:inline="javascript">
     const app = new Vue({
         el: '#app',
         data: {
@@ -118,6 +183,7 @@
             activeIndex2: '1',
             search_input: '',
             activeNames: ['1'],
+            goods_comment_input:'',
             count:''
         },methods: {
             handleSelect(key, keyPath) {
@@ -126,8 +192,37 @@
                 }else if(key === '7-6'){
 
                 }
+            },
+			handleInsertShopCart(){
+				const req = {}
+				req.count = this.count
+				req.gId = [[${goods.id}]]
+				H.form('insertShopCart.do',req,function(ret){
+					if (ret.status === 0){
+						app.$message.success(ret.reason);
+						// location.reload()
+					}else {
+						app.$message.error(ret.reason);
+					}
+				})
+			},
+            submit_goods_comment: function () {
+                const gId = location.href.substring(location.href.lastIndexOf('/') + 1,location.href.indexOf('.html'))
+                const req = {}
+                req.gId= gId;
+                req.comment = app.goods_comment_input
+                H.form('insertGoodsComment.do', req, function (ret) {
+                    if (ret.status === 0){
+                        app.$message.success(ret.reason);
+                        // location.reload()
+                    }else {
+                        app.$message.error(ret.reason);
+                    }
+                })
             }
         }
     })
+
+	var a = [[${goodsCommentList}]]
 </script>
 </html>

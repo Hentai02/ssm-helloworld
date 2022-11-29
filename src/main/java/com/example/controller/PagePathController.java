@@ -1,8 +1,10 @@
 package com.example.controller;
 
 import com.example.pojo.Goods;
+import com.example.pojo.GoodsComment;
 import com.example.pojo.GoodsCover;
 import com.example.pojo.User;
+import com.example.service.GoodsCommentService;
 import com.example.service.GoodsCoverService;
 import com.example.service.GoodsService;
 import org.apache.log4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +28,9 @@ public class PagePathController {
 
     @Resource
     GoodsCoverService goodsCoverService;
+
+    @Resource
+    GoodsCommentService goodsCommentService;
 
     /**
      * 首页
@@ -60,7 +66,7 @@ public class PagePathController {
 
 
     /**
-     *
+     * 商品类别
      * @param cat
      * @return
      */
@@ -86,14 +92,29 @@ public class PagePathController {
         return "list";
     }
 
+    /**
+     * 商品详情
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("goods/{id}.html")
     public String goodsDetail(@PathVariable Integer id,Model model){
-        logger.debug(id);
         Goods goods = goodsService.getGoods(id);
         List<GoodsCover> goodsCovers = goodsCoverService.selectAll(id);
+        List<GoodsComment> goodsComments = goodsCommentService.queryBygId(id);
         model.addAttribute(goods);
         model.addAttribute(goodsCovers);
-        logger.debug(goodsCovers);
+        model.addAttribute(goodsComments);
         return "goods_detail";
+    }
+
+    @GetMapping("goods/cart.html")
+    public String shopCart(HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if (user != null){
+            return "shop_cart";
+        }
+        return "redirect:/app/";
     }
 }

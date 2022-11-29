@@ -1,73 +1,72 @@
 <el-header th:fragment="copy">
-    <el-row style="border-bottom: solid 1px #e6e6e6;" type="flex" justify="space-between">
-        <el-col :span="4">
-            <div class="grid-content">
-                <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
-                         @select="handleSelect">
-                    <el-menu-item index="1">
-                        <el-link :underline="false" href="/app/">
-                            <img src="/img/manningLogoBlack.svg"/>
-                        </el-link>
-                    </el-menu-item>
-                    <el-menu-item index="2">
-                        <el-link :underline="false" href="/app/">
-                            <span>MANNING</span>
-                        </el-link>
-                    </el-menu-item>
-                </el-menu>
-            </div>
-        </el-col>
-        <el-col :span="20">
-            <div  style="float: right"  class="grid-content">
-                <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
-                         @select="handleSelect">
+	<el-row style="border-bottom: solid 1px #e6e6e6;" type="flex" justify="space-between">
+		<el-col :span="4">
+			<div class="grid-content">
+				<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+					<el-menu-item index="1">
+						<el-link :underline="false" href="/app/">
+							<img src="/img/manningLogoBlack.svg" />
+						</el-link>
+					</el-menu-item>
+					<el-menu-item index="2">
+						<el-link :underline="false" href="/app/">
+							<span>MANNING</span>
+						</el-link>
+					</el-menu-item>
+				</el-menu>
+			</div>
+		</el-col>
+		<el-col :span="20">
+			<div style="float: right" class="grid-content">
+				<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
 
-                    <el-menu-item index="3">
-                        <el-input style="width:300px" placeholder="search for and inside goods..."
-                                  v-model="search_input"
-                                  class="input-with-select">
-                            <el-button slot="append" icon="el-icon-search"></el-button>
-                        </el-input>
-                    </el-menu-item>
+					<el-menu-item index="3">
+						<el-input style="width:300px" placeholder="search for and inside goods..."
+							v-model="search_input" class="input-with-select">
+							<el-button slot="append" icon="el-icon-search"></el-button>
+						</el-input>
+					</el-menu-item>
 
-                    <el-submenu index="4">
-                        <template slot="title">
-                            <i class="el-icon-goods"></i>
-                            <span>浏览</span>
-                        </template>
-                        <el-menu-item index="4-1">手机数码</el-menu-item>
-                        <el-menu-item index="4-2">游戏交易</el-menu-item>
-                        <el-menu-item index="4-3">生活百货</el-menu-item>
-                        <el-menu-item index="4-4">技能服务</el-menu-item>
-                    </el-submenu>
-                    <el-menu-item class="el-menu-item-padding-left" index="5">
-                        <template slot="title">
-                            <i class="el-icon-shopping-cart-1"></i>
-                            <span>购物车</span>
-                        </template>
-                    </el-menu-item>
-                    <el-menu-item index="6" th:v-if="${session.user == null}">
-                        <template slot="title">
-                            <i class="el-icon-user"></i>
-                            <el-link :underline="false" th:href="@{/app/login.html}">登录</el-link>
-                        </template>
-                    </el-menu-item>
+					<el-submenu index="4">
+						<template slot="title">
+							<i class="el-icon-goods"></i>
+							<span>浏览</span>
+						</template>
+						<el-menu-item index="4-1">手机数码</el-menu-item>
+						<el-menu-item index="4-2">游戏交易</el-menu-item>
+						<el-menu-item index="4-3">生活百货</el-menu-item>
+						<el-menu-item index="4-4">技能服务</el-menu-item>
+					</el-submenu>
+					<el-menu-item class="el-menu-item-padding-left" index="5">
+						<template slot="title">
+							<el-link th:href="@{/app/goods/cart.html}" :underline="false">
+								<i class="el-icon-shopping-cart-1"></i>
+								<span>购物车</span>
+							</el-link>
+						</template>
+					</el-menu-item>
+					<el-menu-item index="6" th:v-if="${session.user == null}">
+						<template slot="title">
+							<i class="el-icon-user"></i>
+							<el-link :underline="false" th:href="@{/app/login.html}">登录</el-link>
+						</template>
+					</el-menu-item>
 
-                    <el-submenu index="7" th:v-if="${session.user != null}">
-                        <template slot="title">
-                            <i class="el-icon-user"></i>
-                            <el-link :underline="false"
-                                     th:text="*{session.user != null}? *{session.user.nickname} : '登录'"></el-link>
-                        </template>
-                        <el-menu-item index="7-1">个人中心</el-menu-item>
-                        <el-menu-item index="7-2">我的订单</el-menu-item>
-<!--                        <el-menu-item index="7-3">消息</el-menu-item>-->
-<!--                        <el-menu-item index="7-4" th:v-show="${session.user.id == 1}">用户管理</el-menu-item>-->
-<!--                        <el-menu-item index="7-5" th:v-show="${session.user.id == 1}">商品管理</el-menu-item>-->
-                        <el-menu-item index="7-6">退出登录</el-menu-item>
-                    </el-submenu>
-                </el-menu>
-            </div>
-        </el-col>
-    </el-row>
+					<el-submenu index="7" th:v-if="${session.user != null}">
+						<template slot="title">
+							<i class="el-icon-user"></i>
+							<el-link :underline="false"
+								th:text="*{session.user != null}? *{session.user.nickname} : '登录'"></el-link>
+						</template>
+						<el-menu-item index="7-1">个人中心</el-menu-item>
+						<el-menu-item index="7-2">我的订单</el-menu-item>
+						<!--                        <el-menu-item index="7-3">消息</el-menu-item>-->
+						<!--                        <el-menu-item index="7-4" th:v-show="${session.user.id == 1}">用户管理</el-menu-item>-->
+						<!--                        <el-menu-item index="7-5" th:v-show="${session.user.id == 1}">商品管理</el-menu-item>-->
+						<el-menu-item index="7-6">退出登录</el-menu-item>
+					</el-submenu>
+				</el-menu>
+			</div>
+		</el-col>
+	</el-row>
 </el-header>

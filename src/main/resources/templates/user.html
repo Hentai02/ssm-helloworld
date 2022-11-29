@@ -1,648 +1,638 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>个人中心</title>
-    <script th:src="@{/js/jquery.js}"></script>
-    <script th:src="@{/js/vue.js}"></script>
-    <link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
-    <script th:src="@{/element-ui/index.js}"></script>
-    <link rel="stylesheet" th:href="@{/css/container.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-</head>
-<style>
+	<head>
+		<meta charset="UTF-8">
+		<title>个人中心</title>
+		<script th:src="@{/js/jquery.js}"></script>
+		<script th:src="@{/js/vue.js}"></script>
+		<link rel="stylesheet" th:href="@{/element-ui/theme-chalk/index.css}">
+		<script th:src="@{/element-ui/index.js}"></script>
+		<link rel="stylesheet" th:href="@{/css/container.css}">
+		<link rel="stylesheet" th:href="@{/css/header.css}">
+	</head>
+	<style>
+		.demo-ruleForm {
+			width: 500px;
+		}
 
-    .demo-ruleForm{
-        width: 360px;
-    }
-    .el-table .warning-row {
-        background: oldlace;
-    }
+		.el-table .warning-row {
+			background: oldlace;
+		}
 
-    .el-table .success-row {
-        background: #f0f9eb;
-    }
-</style>
-<body>
-<div id="app">
-    <el-container>
-        <div th:replace="~{header :: copy}"></div>
-        <el-main>
-            <el-row :gutter="20">
-                <el-tabs th:v-if="${session.user.id == 1}" type="border-card" >
-                    <el-tab-pane><span slot="label"><i class="el-icon-user"></i> 我的信息 </span>
-                        <el-form :model="session_user" :rules="rules" ref="session_user" label-width="100px" class="demo-ruleForm">
-                            <el-form-item label="头像：" prop="avatar">
-                            <div style="text-align: left" class="demo-basic--circle">
-                                <div class="block"><el-avatar shape="square" :size="80" :src="session_user.avatar"></el-avatar></div>
-                            </div>
-                            </el-form-item>
+		.el-table .success-row {
+			background: #f0f9eb;
+		}
+	</style>
+	<body>
+		<div id="app">
+			<el-container>
+				<!-- 头部导航栏 start -->
+				<div th:replace="~{header :: copy}"></div>
+				<!-- 头部导航栏 end -->
+				<el-main>
+					<el-row :gutter="20">
+						<!-- 管理员权限 start -->
+						<el-tabs th:v-if="${session.user.id == 1}" type="border-card">
+							<!-- 我的信息 start -->
+							<el-tab-pane><span slot="label"><i class="el-icon-user"></i> 我的信息 </span>
+								<el-form :model="session_user" :rules="rules" ref="session_user" label-width="100px"
+									class="demo-ruleForm">
+									<el-form-item label="头像：" prop="avatar">
+										<div style="text-align: left" class="demo-basic--circle">
+											<div class="block">
+												<el-avatar shape="square" :size="80" :src="session_user.avatar">
+												</el-avatar>
+											</div>
+										</div>
+									</el-form-item>
 
-                            <el-form-item label="昵称：" prop="nickname">
-                                <el-input v-model="session_user.nickname"></el-input>
-                            </el-form-item>
+									<el-form-item label="昵称：" prop="nickname">
+										<el-input v-model="session_user.nickname"></el-input>
+									</el-form-item>
 
-                            <el-form-item label="用户名：" prop="username">
-                                <el-input v-model="session_user.username" disabled></el-input>
-                            </el-form-item>
+									<el-form-item label="用户名：" prop="username">
+										<el-input v-model="session_user.username" disabled></el-input>
+									</el-form-item>
 
-                            <el-form-item label="密码：" prop="password">
-                                <el-input type="password" v-model="session_user.password"></el-input>
-                            </el-form-item>
+									<el-form-item label="手机号：" prop="phone">
+										<el-input v-model="session_user.phone"></el-input>
+									</el-form-item>
 
-                            <el-form-item label="性别：" prop="gender">
-                                <el-radio-group v-model="session_user.gender">
-                                    <el-radio label="男"></el-radio>
-                                    <el-radio label="女"></el-radio>
-                                </el-radio-group>
-                            </el-form-item>
+									<el-form-item label="地址：" prop="address">
+										<el-input v-model="session_user.address"></el-input>
+									</el-form-item>
 
-                            <el-form-item>
-                                <el-button type="primary" @click="handleSubmit_current_user(session_user)">保存</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-tab-pane>
-                    <el-tab-pane><span slot="label"><i class="el-icon-tickets"></i> 商品管理 </span>
-                        <template>
-                            <el-table stripe :data="goods.filter(data => !table_goods_search_text || data.name.toLowerCase().includes(table_goods_search_text.toLowerCase()))"
-                                    style="width: 100%">
-                                <el-table-column
-                                        sortable
-                                        prop="id"
-                                        label="ID"
-                                        width="80">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="名称">
-                                </el-table-column>
-                                <el-table-column
-                                        sortable
-                                        prop="price"
-                                        label="售价"
-                                        width="80">
-                                </el-table-column>
+									<el-form-item label="密码：" prop="password">
+										<el-input type="password" v-model="session_user.password"></el-input>
+									</el-form-item>
 
-                                <el-table-column
-                                        sortable
-                                        prop="view"
-                                        label="浏览"
-                                        width="80">
-                                </el-table-column>
+									<el-form-item label="性别：" prop="gender">
+										<el-radio-group v-model="session_user.gender">
+											<el-radio label="男"></el-radio>
+											<el-radio label="女"></el-radio>
+										</el-radio-group>
+									</el-form-item>
 
-                                <el-table-column
-                                        :formatter="table_goods_count_formatter"
-                                        prop="count"
-                                        label="数量"
-                                        width="80">
-                                </el-table-column>
+									<el-form-item>
+										<el-button type="primary" @click="handleSubmit_current_user(session_user)">保存
+										</el-button>
+									</el-form-item>
+								</el-form>
+							</el-tab-pane>
+							<!-- 我的信息 end -->
+							<!-- 商品管理 start -->
+							<el-tab-pane><span slot="label"><i class="el-icon-tickets"></i> 商品管理 </span>
+								<template>
+									<el-table stripe
+										:data="goods.filter(data => !table_goods_search_text || data.name.toLowerCase().includes(table_goods_search_text.toLowerCase()))"
+										style="width: 100%">
+										<el-table-column sortable prop="id" label="ID" width="80">
+										</el-table-column>
+										<el-table-column prop="name" label="名称">
+										</el-table-column>
+										<el-table-column sortable prop="price" label="售价" width="80">
+										</el-table-column>
+										<el-table-column sortable prop="view" label="浏览" width="80">
+										</el-table-column>
+										<el-table-column :formatter="table_goods_count_formatter" prop="count"
+											label="数量" width="80">
+										</el-table-column>
+										<el-table-column prop="isDel" label="状态"
+											:formatter="table_goods_status_formatter" width="80">
+										</el-table-column>
+										<el-table-column prop="createBy" label="创建者" width="80">
+										</el-table-column>
+										<el-table-column :formatter="table_date_formatter" prop="createTime"
+											label="创建时间" width="180">
+											<template slot="header" slot-scope="scope">
+												<el-input @input="table_goods_search_input"
+													v-model="table_goods_search_text" size="small"
+													placeholder="输入关键字搜索" />
+											</template>
+										</el-table-column>
+										
+										<el-table-column align="right" label="操作" width="150">
+											<template slot="header" slot-scope="scope">
+												<el-button @click="dialogFormVisible_table_goods = true" size="small">
+													添加商品</el-button>
+											</template>
+											<template slot-scope="scope">
+												<el-button size="mini"
+													@click="handleEdit_table_goods(scope.$index, scope.row)">编辑
+												</el-button>
+												<el-button v-show="scope.row.isDel == 0" size="mini" type="danger"
+													@click="handleDelete_table_goods(scope.$index, scope.row)">下架
+												</el-button>
+												<el-button v-show="scope.row.isDel<0" size="mini" type="success"
+													@click="handleShelves_table_goods(scope.$index, scope.row)">上架
+												</el-button>
+											</template>
+										</el-table-column>
+										
+									</el-table>
+								</template>
+								
+								<div class="block">
+									<el-pagination :hide-on-single-page="true" :page_size="pagination.current_size"
+										@current-change="table_goods_page_change"
+										:current-page.sync="pagination.current_page" :total="pagination.total"
+										layout="prev, pager, next">
+									</el-pagination>
+								</div>
+								
+							</el-tab-pane>
+							<!-- 商品管理 end -->
+							<!-- 用户管理 start -->
+							<el-tab-pane label="用户管理"><span slot="label"><i class="el-icon-set-up"></i> 用户管理 </span>
+								<template>
+									<el-table stripe
+										:data="users.filter(data => !table_user_search_text || data.username.toLowerCase().includes(table_user_search_text.toLowerCase()))"
+										style="width: 100%">
+										<el-table-column prop="id" label="ID" width="70">
+										</el-table-column>
+										<el-table-column prop="nickname" label="昵称" width="80">
+										</el-table-column>
+										<el-table-column prop="username" label="用户名" width="120">
+										</el-table-column>
+										<el-table-column prop="gender" label="性别" width="80">
+										</el-table-column>
+										<el-table-column prop="phone" label="手机号" width="120">
+										</el-table-column>
+										<el-table-column prop="address" label="地址" width="300">
+										</el-table-column>
+										<el-table-column :formatter="table_user_status_formatter" prop="isDel"
+											label="状态" width="80">
+										</el-table-column>
+										<el-table-column :formatter="table_date_formatter" prop="updateTime"
+											label="更新时间" width="120">
+										</el-table-column>
+										
+										<el-table-column align="right" label="操作">
+											<template slot="header" slot-scope="scope">
+												<el-input @input="table_user_search_input"
+													v-model="table_user_search_text" size="small "
+													placeholder="输入关键字搜索" />
+											</template>
+											<template slot-scope="scope">
+												<el-button size="mini"
+													@click="handleEdit_table_user(scope.$index, scope.row)">编辑
+												</el-button>
+												<el-button v-show="scope.row.isDel == 0" size="mini" type="danger"
+													@click="handleDelete_table_user(scope.$index, scope.row)">封禁
+												</el-button>
+												<el-button v-show="scope.row.isDel < 0" size="mini" type="success"
+													@click="handleAllow_table_user(scope.$index, scope.row)">解封
+												</el-button>
+											</template>
+										</el-table-column>
+										
+									</el-table>
+								</template>
+							</el-tab-pane>
+							<!-- 用户管理 end -->
+							<!-- 订单管理 start -->
+							<el-tab-pane label="订单管理"><span slot="label"><i class="el-icon-user"></i> 订单管理 </span>
+								订单管理
+							</el-tab-pane>
+							<!-- 订单管理 start -->
+						</el-tabs>
+						<!-- 管理员 end -->
+						<!-- 普通用户 start -->
+						<el-tabs th:v-if="${session.user.id != 1}" type="border-card">
+							<!-- 我的信息 start -->
+							<el-tab-pane><span slot="label"><i class="el-icon-user"></i> 我的信息 </span>
+								<el-form :model="session_user" :rules="rules" ref="session_user" label-width="100px"
+									class="demo-ruleForm">
+									
+									<el-form-item label="头像：" prop="avatar">
+										<div style="text-align: left" class="demo-basic--circle">
+											<div class="block">
+												<el-avatar shape="square" :size="80" :src="session_user.avatar">
+												</el-avatar>
+											</div>
+										</div>
+									</el-form-item>
+									
+									<el-form-item label="昵称：" prop="nickname">
+										<el-input v-model="session_user.nickname"></el-input>
+									</el-form-item>
+									<el-form-item label="用户名：" prop="username">
+										<el-input v-model="session_user.username" disabled></el-input>
+									</el-form-item>
+									<el-form-item label="密码：" prop="password">
+										<el-input type="password" v-model="session_user.password"></el-input>
+									</el-form-item>
+									<el-form-item label="性别：" prop="gender">
+										<el-radio-group v-model="session_user.gender">
+											<el-radio label="男"></el-radio>
+											<el-radio label="女"></el-radio>
+										</el-radio-group>
+									</el-form-item>
+									
+									<el-form-item>
+										<el-button type="primary" @click="handleSubmit_current_user(session_user)">保存
+										</el-button>
+									</el-form-item>
+									
+								</el-form>
+							</el-tab-pane>
+							<!-- 我的信息 end -->
+						</el-tabs>
+						<!-- 普通用户 end -->
+					</el-row>
+				</el-main>
+					
+				<!-- 商品信息对话框 start -->
+				<template>
+					<el-dialog @close="table_goods_select_goods_dialog_close()" title="商品信息"
+						:visible.sync="dialogFormVisible_table_goods">
+						<el-form :model="select_goods">
+							
+							<el-form-item label="封面" :label-width="formLabelWidth">
+								<img :src="['/data/goods/' + select_goods.id + '/cover/' + select_goods.cover + '.jpg']"
+									class="image">
+							</el-form-item>
 
-                                <el-table-column
-                                        prop="isDel"
-                                        label="状态"
-                                        :formatter="table_goods_status_formatter"
-                                        width="80">
-                                </el-table-column>
+							<el-form-item v-show="select_goods.id != null" label="ID" :label-width="formLabelWidth">
+								<el-input disabled v-model="select_goods.id" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="名称" :label-width="formLabelWidth">
+								<el-input v-model="select_goods.name" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="售价" :label-width="formLabelWidth">
+								<el-input v-model="select_goods.price" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="描述" :label-width="formLabelWidth">
+								<el-input type="textarea" v-model="select_goods.desc" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="数量" :label-width="formLabelWidth">
+								<el-input-number v-model="select_goods.count" :min="0" :max="99"></el-input-number>
+							</el-form-item>
+							
+							<el-form-item label="类别" :label-width="formLabelWidth">
+								<el-col :span="11">
+									<el-select v-model="select_goods.gCid" placeholder="请选择类别"
+										@change="table_goods_cid_change">
+										<el-option label="手机装备" :value='cid.g1'></el-option>
+										<el-option label="游戏装备" :value='cid.g2'></el-option>
+										<el-option label="生活百货" :value='cid.g3'></el-option>
+										<el-option label="技能服务" :value='cid.g4'></el-option>
+									</el-select>
+								</el-col>
+			
+								<el-col :span="11">
+									<el-select v-model="select_goods.gSubCid" placeholder="请选择类别">
+										<template v-for="item in goods_sub_category">
+											<el-option :label="item.name" :value='item.id'></el-option>
+										</template>
+									</el-select>
+								</el-col>
+								
+							</el-form-item>
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="dialogFormVisible_table_goods = false">取 消</el-button>
+							<el-button type="primary" @click="submit_select_good_form_dialog()">确 定</el-button>
+						</div>
+					</el-dialog>
+				</template>
+				<!-- 商品信息对话框 end -->
 
-                                <el-table-column
-                                        prop="createBy"
-                                        label="创建者"
-                                        width="80">
-                                </el-table-column>
+				<!-- 用户信息对话框 start -->
+				<template>
+					<el-dialog title="用户信息" :visible.sync="dialogFormVisible_table_user">
+						<el-form :rules="rules" :model="select_user">
+							<el-form-item label="ID" :label-width="formLabelWidth">
+								<el-input disabled v-model="select_user.id"></el-input>
+							</el-form-item>
+							<el-form-item label="昵称" :label-width="formLabelWidth" prop="nickname">
+								<el-input v-model="select_user.nickname"></el-input>
+							</el-form-item>
+							<el-form-item label="用户名" :label-width="formLabelWidth">
+								<el-input v-model="select_user.username"></el-input>
+							</el-form-item>
+							<el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+								<el-input v-model="select_user.password"></el-input>
+							</el-form-item>
 
-                                <el-table-column
-                                        :formatter="table_date_formatter"
-                                        prop="createTime"
-                                        label="创建时间"
-                                        width="180">
-                                    <template slot="header" slot-scope="scope">
-                                        <el-input
-                                                @input="table_goods_search_input"
-                                                v-model="table_goods_search_text"
-                                                size="small"
-                                                placeholder="输入关键字搜索"/>
-                                    </template>
-                                </el-table-column>
+							<el-form-item label="性别" :label-width="formLabelWidth">
+								<el-radio-group v-model="select_user.gender">
+									<el-radio label="男"></el-radio>
+									<el-radio label="女"></el-radio>
+								</el-radio-group>
+							</el-form-item>
 
-                                <el-table-column align="right"  label="操作" width="150">
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="dialogFormVisible_table_user = false">取 消</el-button>
+							<el-button type="primary" @click="submit_select_user_form_dialog()">确 定</el-button>
+						</div>
+						
+					</el-dialog>
+				</template>
+				<!-- 用户信息对话框 end -->
+				
+				<!-- 脚注 start -->
+				<el-footer>Footer</el-footer>
+				<!-- 脚注 end -->
+				
+			</el-container>
+		</div>
+	</body>
+	<script th:src="@{js/hquery.js}"></script>
+	<script>
+		const app = new Vue({
+			el: '#app',
+			data: {
+				// 商品类别id
+				cid: {
+					g1: 101,
+					g2: 102,
+					g3: 103,
+					g4: 104,
+				},
+				// 商品子类别
+				goods_sub_category: [],
+				// 分页时使用的商品数据
+				goods: [],
+				// 搜索时使用的数据
+				srcGoods: [],
+				// 商品管理选中的商品以及添加商品时的goods
+				select_goods: {
+					gCid: 101,
+					count: 0,
+					gSubCid: 1001
+				},
+				// 用户管理选中的用户以及创建用户时的user
+				select_user: {},
+				table_goods_search_text: '',
+				table_user_search_text: '',
+				// header 搜索框
+				search_input: '',
+				dialogFormVisible_table_goods: false,
+				dialogFormVisible_table_user: false,
+				formLabelWidth: '120px',
+				activeIndex: '1',
+				activeIndex2: '1',
+				// 所有用户
+				users: [],
+				// 登录的用户
+				session_user: {},
+				// 表单验证
+				rules: {
+					nickname: [{
+							required: true,
+							message: '请输入昵称',
+							trigger: 'blur'
+						},
+						{
+							min: 3,
+							max: 8,
+							message: '长度在 3 到 8 个字符',
+							trigger: 'blur'
+						}
+					],
+					password: [{
+							required: true,
+							message: '此处的密码为MD5加密后的哈希值；修改时无需手动加密，后台将会自动加密',
+							trigger: 'change'
+						},
+						{
+							min: 8,
+							max: 16,
+							message: '长度在 8 到 16 个字符',
+							trigger: 'blur'
+						}
+					],
+					username: [{
+							required: true,
+							message: '用户名由数字字母组成',
+							trigger: 'change'
+						},
+						{
+							min: 8,
+							max: 16,
+							message: '长度在 8 到 16 个字符',
+							trigger: 'blur'
+						}
+					]
+					// gender: [
+					//     {required: true, message: '请选择性别', trigger: 'change'}
+					// ]
+				},
+				// 分页控件
+				pagination: {
+					// 总条目数
+					total: 0,
+					//每页显示条目个数，支持 .sync 修饰符
+					page_size: 0,
+					//总页数
+					page_count: 0,
+					// 当前页数
+					current_page: 0,
+					// 每页显示条目个数
+					page_sizes: 0
+				}
+			},
+			methods: {
+				// 格式化显示
+				table_date_formatter: function(row, column, cellValue, index) {
+					const create_time = new Date(cellValue);
+					const DD = String(create_time.getDate()).padStart(2, '0'); // 获取日
+					const MM = String(create_time.getMonth() + 1).padStart(2, '0'); //获取月份，1 月为 0
+					const yyyy = create_time.getFullYear(); // 获取年
+					return yyyy + '-' + MM + '-' + DD;
+				},
+				table_goods_status_formatter: function(row, column, cellValue, index) {
+					return cellValue >= 0 ? '在售' : '已下架'
+				},
+				table_goods_count_formatter: function(row, column, cellValue, index) {
+					return cellValue <= 0 ? '售罄' : cellValue
+				},
+				table_user_status_formatter: function(row, column, cellValue, index) {
+					if (row.id === 1) {
+						return '管理员'
+					}
+					return cellValue >= 0 ? '正常' : '封禁中'
+				},
 
-                                    <template slot="header" slot-scope="scope">
-                                        <el-button @click="dialogFormVisible_table_goods = true" size="small">添加商品</el-button>
-                                    </template>
+				// 回调
+				table_goods_page_change(val) {
+					console.log(`当前页: ${val}`);
+					getAllGoods();
+				},
+				table_goods_search_input() {
+					if (this.table_goods_search_text.length <= 0) {
+						getAllGoods()
+					}
+					this.pagination.total = 8;
+					this.goods = app.srcGoods;
 
-                                    <template slot-scope="scope">
-                                        <el-button
-                                                size="mini"
-                                                @click="handleEdit_table_goods(scope.$index, scope.row)">编辑</el-button>
-                                        <el-button
-                                                v-show="scope.row.isDel == 0"
-                                                size="mini"
-                                                type="danger"
-                                                @click="handleDelete_table_goods(scope.$index, scope.row)">下架</el-button>
-                                        <el-button
-                                                v-show="scope.row.isDel<0"
-                                                size="mini"
-                                                type="success"
-                                                @click="handleShelves_table_goods(scope.$index, scope.row)">上架</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </template>
-                        <div class="block">
-                            <el-pagination
-                                    :hide-on-single-page="true"
-                                    :page_size="pagination.current_size"
-                                    @current-change="table_goods_page_change"
-                                    :current-page.sync="pagination.current_page"
-                                    :total="pagination.total"
-                                    layout="prev, pager, next">
-                            </el-pagination>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane  label="用户管理"><span slot="label"><i class="el-icon-set-up"></i> 用户管理 </span>
-                        <template>
-                            <el-table stripe :data="users.filter(data => !table_user_search_text || data.username.toLowerCase().includes(table_user_search_text.toLowerCase()))"
-                                      style="width: 100%">
-                                <el-table-column
-                                        prop="id"
-                                        label="ID"
-                                        width="70">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="nickname"
-                                        label="昵称"
-                                        width="80">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="username"
-                                        label="用户名"
-                                        width="150">
-                                </el-table-column>
+				},
+				table_user_search_input() {},
+				table_goods_cid_change() {
+					getAllSubCategory()
+				},
+				table_goods_select_goods_dialog_close() {
+					app.select_goods = {
+						gCid: 101,
+						count: 0,
+						gSubCid: 1001
+					};
+				},
 
-                                <el-table-column
-                                        prop="avatar"
-                                        label="头像"
-                                        width="80">
-                                </el-table-column>
+				// 点击事件
+				handleSelect(key, keyPath) {
+					console.log(key, keyPath);
+					if (key === "7-1") {
+						location.href = "/app/user.html"
+					} else if (key === '7-6') {
+						H.rest('user/logout.do', null, function(ret) {
+							location.href = '/app/'
+						})
+					}
+				},
+				// 商品管理
+				handleEdit_table_goods(index, row) {
+					this.dialogFormVisible_table_goods = true
+					this.select_goods = row
+				},
+				handleDelete_table_goods(index, row) {
+					const req = {}
+					req.id = row.id;
+					H.form('goods/deleteGoods.do', req, function(ret) {
+						getAllGoods()
+					})
+				},
+				handleShelves_table_goods(index, row) {
+					const req = {}
+					req.id = row.id;
+					H.form('goods/shelvesGoods.do', req, function(ret) {
+						getAllGoods()
+					})
+				},
 
-                                <el-table-column
-                                        prop="password"
-                                        label="密码"
-                                        width="300">
-                                </el-table-column>
+				// 用户管理
+				handleEdit_table_user(index, row) {
+					this.dialogFormVisible_table_user = true
+					this.select_user = row;
+				},
+				handleDelete_table_user(index, row) {
+					const req = {}
+					req.id = row.id;
+					req.status = -1;
+					H.form('user/changeUserStatus.do', req, function(ret) {
+						if (ret.status !== 0)
+							app.$message.error(ret.reason);
+						getAllUser()
+					})
+				},
+				handleAllow_table_user(index, row) {
+					const req = {}
+					req.id = row.id;
+					req.status = 0;
+					H.form('user/changeUserStatus.do', req, function(ret) {
+						getAllUser()
+					})
+				},
+				handleSubmit_current_user(session_user) {
+					if (session_user.nickname.length >= 3 && session_user.password.length >= 3) {
+						if (session_user.nickname.length <= 8) {
+							updateUserInfo(session_user)
+						}
+					} else {
+						app.$message.error('非法字符！');
+					}
+				},
 
-                                <el-table-column
-                                        prop="gender"
-                                        label="性别"
-                                        width="80">
-                                </el-table-column>
+				// 对话框'确认'点击事件
+				submit_select_good_form_dialog: function() {
+					const select_goods = this.select_goods;
+					if (select_goods.id !== undefined) {
+						console.log('编辑商品:', select_goods.id)
+						H.rest('goods/updateGoodsInfo.do', select_goods, function(ret) {
+							if (ret.status === 0) {
+								getAllGoods()
+								app.dialogFormVisible_table_goods = false
+								app.$message.success(ret.reason);
+							}
+						})
+					} else {
+						console.log('添加商品:', select_goods.id)
+						// select_goods.gSubCid = app.goods_sub_category[0].id
+						// if (select_goods.count === undefined)
+						//     select_goods.count = 1
+						H.rest('goods/insertGoods.do', this.select_goods, function(ret) {
+							console.log(ret.reason)
+						})
+					}
 
-<!--                                <el-table-column-->
-<!--                                        :formatter="table_date_formatter"-->
-<!--                                        prop="createTime"-->
-<!--                                        label="创建时间"-->
-<!--                                        width="120">-->
-<!--                                </el-table-column>-->
+				},
+				submit_select_user_form_dialog: function() {
+					const req = app.select_user;
+					H.rest('user/updateUserInfo.do', req, function(ret) {
+						if (ret.status === 0) {
+							getAllUser()
+							app.dialogFormVisible_table_user = false
+						} else {
+							app.$message.error(ret.reason);
+						}
+					})
+				}
+			}
+		})
 
-                                <el-table-column
-                                        :formatter="table_user_status_formatter"
-                                        prop="isDel"
-                                        label="状态"
-                                        width="80">
-                                </el-table-column>
+		function updateUserInfo(form) {
+			H.rest('user/updateUserInfo.do', form, function(ret) {
+				if (ret.status === 0) {
+					location.reload();
+				} else {
+					app.$message.error(ret.reason);
+				}
+			})
+		}
 
+		function getUserInfo() {
+			H.form('user/getUserInfo.do', null, function(ret) {
+				if (ret.status === 0)
+					app.session_user = ret.data;
+				else {
+					app.$message.error(ret.reason);
+					location.href = "/app/";
+				}
 
-                                <el-table-column
-                                        :formatter="table_date_formatter"
-                                        prop="updateTime"
-                                        label="更新时间"
-                                        width="120">
-                                </el-table-column>
+			})
+		}
+		getUserInfo();
 
-                                <el-table-column align="right"  label="操作">
+		function getAllGoods() {
+			const req = {};
+			req.current_page = app.pagination.current_page;
+			H.form('goods/queryAllGoods.do', req, function(ret) {
+				app.goods = ret.data.goods;
+				app.srcGoods = ret.data.srcGoods;
+				app.pagination.total = ret.data.total;
+				app.pagination.page_count = ret.data.page_count;
+				app.pagination.page_size = ret.data.page_size;
+			})
+		}
+		getAllGoods();
 
-                                    <template slot="header" slot-scope="scope">
-                                        <el-input
-                                                @input="table_user_search_input"
-                                                v-model="table_user_search_text"
-                                                size="small "
-                                                placeholder="输入关键字搜索"/>
-                                    </template>
-                                    <template slot-scope="scope">
-                                        <el-button
-                                                size="mini"
-                                                @click="handleEdit_table_user(scope.$index, scope.row)">编辑</el-button>
+		function getAllSubCategory() {
+			const req = {}
+			req.gCid = app.select_goods.gCid;
+			H.form('goods/Subcategory.do', req, function(ret) {
+				app.goods_sub_category = ret.data;
+				app.select_goods.gSubCid = app.goods_sub_category[0].id;
+			})
+		}
+		getAllSubCategory();
 
-                                        <el-button
-                                                v-show="scope.row.isDel == 0"
-                                                size="mini"
-                                                type="danger"
-                                                @click="handleDelete_table_user(scope.$index, scope.row)">封禁</el-button>
-
-                                        <el-button
-                                                v-show="scope.row.isDel < 0"
-                                                size="mini"
-                                                type="success"
-                                                @click="handleAllow_table_user(scope.$index, scope.row)">解封</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </template>
-                    </el-tab-pane>
-                    <el-tab-pane label="订单管理"><span slot="label"><i class="el-icon-user"></i> 订单管理 </span>
-                        订单管理
-                    </el-tab-pane>
-                </el-tabs>
-                <el-tabs th:v-if="${session.user.id != 1}" type="border-card" >
-                    <el-tab-pane><span slot="label"><i class="el-icon-user"></i> 我的信息 </span>
-                        <el-form :model="session_user" :rules="rules" ref="session_user" label-width="100px" class="demo-ruleForm">
-                            <el-form-item label="头像：" prop="avatar">
-                                <div style="text-align: left" class="demo-basic--circle">
-                                    <div class="block"><el-avatar shape="square" :size="80" :src="session_user.avatar"></el-avatar></div>
-                                </div>
-                            </el-form-item>
-
-                            <el-form-item label="昵称：" prop="nickname">
-                                <el-input v-model="session_user.nickname"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="用户名：" prop="username">
-                                <el-input v-model="session_user.username" disabled></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="密码：" prop="password">
-                                <el-input type="password" v-model="session_user.password"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="性别：" prop="gender">
-                                <el-radio-group v-model="session_user.gender">
-                                    <el-radio label="男"></el-radio>
-                                    <el-radio label="女"></el-radio>
-                                </el-radio-group>
-                            </el-form-item>
-
-                            <el-form-item>
-                                <el-button type="primary" @click="handleSubmit_current_user(session_user)">保存</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-tab-pane>
-                </el-tabs>
-            </el-row>
-        </el-main>
-
-        <template>
-            <el-dialog @close="table_goods_select_goods_dialog_close()" title="商品信息" :visible.sync="dialogFormVisible_table_goods">
-                <el-form :model="select_goods">
-
-                    <el-form-item label="封面" :label-width="formLabelWidth">
-                        <img :src="['/data/goods/' + select_goods.id + '/cover/' + select_goods.cover + '.jpg']"  class="image">
-                    </el-form-item>
-
-                    <el-form-item v-show="select_goods.id != null" label="ID" :label-width="formLabelWidth">
-                        <el-input disabled v-model="select_goods.id" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="名称" :label-width="formLabelWidth">
-                        <el-input v-model="select_goods.name" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="售价" :label-width="formLabelWidth">
-                        <el-input v-model="select_goods.price" autocomplete="off"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="描述" :label-width="formLabelWidth">
-                        <el-input type="textarea" v-model="select_goods.desc" autocomplete="off"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="数量" :label-width="formLabelWidth">
-                        <el-input-number v-model="select_goods.count" :min="0" :max="99"></el-input-number>
-                    </el-form-item>
-
-                    <el-form-item label="类别" :label-width="formLabelWidth">
-                        <el-col :span="11">
-                            <el-select v-model="select_goods.gCid" placeholder="请选择类别" @change="table_goods_cid_change">
-                                <el-option label="手机装备" :value='cid.g1'></el-option>
-                                <el-option label="游戏装备" :value='cid.g2'></el-option>
-                                <el-option label="生活百货" :value='cid.g3'></el-option>
-                                <el-option label="技能服务" :value='cid.g4'></el-option>
-                            </el-select>
-                        </el-col>
-                        <el-col :span="11">
-                            <el-select v-model="select_goods.gSubCid" placeholder="请选择类别">
-                                <template v-for="item in goods_sub_category">
-                                    <el-option :label="item.name" :value='item.id'></el-option>
-                                </template>
-                            </el-select>
-                        </el-col>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible_table_goods = false">取 消</el-button>
-                    <el-button type="primary" @click="submit_select_good_form_dialog()">确 定</el-button>
-                </div>
-            </el-dialog>
-        </template>
-
-        <template>
-            <el-dialog title="用户信息" :visible.sync="dialogFormVisible_table_user">
-                <el-form :rules="rules" :model="select_user">
-                    <el-form-item label="ID" :label-width="formLabelWidth">
-                        <el-input disabled v-model="select_user.id"></el-input>
-                    </el-form-item>
-                    <el-form-item label="昵称" :label-width="formLabelWidth" prop="nickname">
-                        <el-input v-model="select_user.nickname"></el-input>
-                    </el-form-item>
-                    <el-form-item label="用户名" :label-width="formLabelWidth" >
-                        <el-input v-model="select_user.username"></el-input>
-                    </el-form-item>
-
-                    <el-form-item  label="密码" :label-width="formLabelWidth" prop="password">
-                        <el-input v-model="select_user.password"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="性别" :label-width="formLabelWidth">
-                        <el-radio-group v-model="select_user.gender">
-                            <el-radio label="男"></el-radio>
-                            <el-radio label="女"></el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible_table_user = false">取 消</el-button>
-                    <el-button type="primary" @click="submit_select_user_form_dialog()">确 定</el-button>
-                </div>
-            </el-dialog>
-        </template>
-        <el-footer>Footer</el-footer>
-    </el-container>
-</div>
-</body>
-<script th:src="@{js/hquery.js}"></script>
-<script>
-    const app = new Vue({
-        el: '#app',
-        data: {
-            // 商品类别id
-            cid:{
-                g1:101,
-                g2:102,
-                g3:103,
-                g4:104,
-            },
-            // 商品子类别
-            goods_sub_category:[],
-            // 分页时使用的商品数据
-            goods:[],
-            // 搜索时使用的数据
-            srcGoods:[],
-            // 商品管理选中的商品以及添加商品时的goods
-            select_goods:{
-                gCid:101, count:0,gSubCid:1001
-            },
-            // 用户管理选中的用户以及创建用户时的user
-            select_user:{},
-            table_goods_search_text: '',
-            table_user_search_text:'',
-            // header 搜索框
-            search_input: '',
-            dialogFormVisible_table_goods: false,
-            dialogFormVisible_table_user:false,
-            formLabelWidth: '120px',
-            activeIndex: '1',
-            activeIndex2: '1',
-            // 所有用户
-            users:[],
-            // 登录的用户
-            session_user: {},
-            // 表单验证
-            rules: {
-                nickname: [
-                    {required: true, message: '请输入昵称', trigger: 'blur'},
-                    {min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur'}
-                ],
-                password: [
-                    {required: true, message: '此处的密码为MD5加密后的哈希值；修改时无需手动加密，后台将会自动加密', trigger: 'change'},
-                    {min: 8, max: 16, message: '长度在 8 到 16 个字符', trigger: 'blur'}
-                ],
-                username: [
-                    {required: true, message: '用户名由数字字母组成', trigger: 'change'},
-                    {min: 8, max: 16, message: '长度在 8 到 16 个字符', trigger: 'blur'}
-                ]
-                // gender: [
-                //     {required: true, message: '请选择性别', trigger: 'change'}
-                // ]
-            },
-            // 分页控件
-            pagination:{
-                // 总条目数
-                total:0,
-                //每页显示条目个数，支持 .sync 修饰符
-                page_size:0,
-                //总页数
-                page_count:0,
-                // 当前页数
-                current_page:0,
-                // 每页显示条目个数
-                page_sizes:0
-            }
-        },
-        methods: {
-// 格式化显示
-            table_date_formatter: function(row, column, cellValue, index) {
-                const create_time = new Date(cellValue);
-                const DD = String(create_time.getDate()).padStart(2, '0'); // 获取日
-                const MM = String(create_time.getMonth() + 1).padStart(2, '0'); //获取月份，1 月为 0
-                const yyyy = create_time.getFullYear(); // 获取年
-                return  yyyy + '-' + MM + '-' + DD;
-            },
-            table_goods_status_formatter:function (row, column, cellValue, index) {
-                return cellValue >= 0 ? '在售':'已下架'
-            },
-            table_goods_count_formatter:function (row, column, cellValue, index) {
-                return cellValue <=0 ? '售罄': cellValue
-            },
-            table_user_status_formatter:function (row, column, cellValue, index) {
-                if (row.id === 1){
-                    return '管理员'
-                }
-                return cellValue >= 0 ? '正常':'封禁中'
-            },
-
-// 回调
-            table_goods_page_change(val) {
-                console.log(`当前页: ${val}`);
-                getAllGoods();
-            },
-            table_goods_search_input(){
-                if (this.table_goods_search_text.length <= 0){
-                    getAllGoods()
-                }
-                this.pagination.total = 8;
-                this.goods = app.srcGoods;
-
-            },
-            table_user_search_input(){},
-            table_goods_cid_change(){
-                getAllSubCategory()
-            },
-            table_goods_select_goods_dialog_close(){
-                app.select_goods = {gCid:101, count:0,gSubCid:1001};
-            },
-
-// 点击事件
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-                if(key === "7-1"){
-                    location.href = "/app/user.html"
-                }else if(key === '7-6'){
-                    H.rest('user/logout.do',null,function (ret) {
-                        location.href = '/app/'
-                    })
-                }
-            },
-            // 商品管理
-            handleEdit_table_goods(index, row) {
-                this.dialogFormVisible_table_goods = true
-                this.select_goods = row
-            },
-            handleDelete_table_goods(index, row) {
-                const req = {}
-                req.id = row.id;
-                H.form('goods/deleteGoods.do',req,function (ret) {
-                    getAllGoods()
-                })
-            },
-            handleShelves_table_goods(index, row){
-                const req = {}
-                req.id = row.id;
-                H.form('goods/shelvesGoods.do',req,function (ret) {
-                    getAllGoods()
-                })
-            },
-
-            // 用户管理
-            handleEdit_table_user(index, row){
-                this.dialogFormVisible_table_user = true
-                this.select_user = row;
-            },
-            handleDelete_table_user(index, row){
-                const req = {}
-                req.id = row.id;
-                req.status = -1;
-                H.form('user/changeUserStatus.do',req,function (ret) {
-                    if (ret.status !== 0)
-                        app.$message.error(ret.reason);
-                    getAllUser()
-                })
-            },
-            handleAllow_table_user(index, row){
-                const req = {}
-                req.id = row.id;
-                req.status = 0;
-                H.form('user/changeUserStatus.do',req,function (ret) {
-                    getAllUser()
-                })
-            },
-            handleSubmit_current_user(session_user){
-                if (session_user.nickname.length >= 3 && session_user.password.length >= 3){
-                    if(session_user.nickname.length<=8){
-                        updateUserInfo(session_user)
-                    }
-                }else{
-                    app.$message.error('非法字符！');
-                }
-            },
-
-            // 对话框'确认'点击事件
-            submit_select_good_form_dialog:function () {
-                const select_goods = this.select_goods;
-                if (select_goods.id !== undefined){
-                    console.log('编辑商品:',select_goods.id)
-                    H.rest('goods/updateGoodsInfo.do',select_goods,function (ret) {
-                        if (ret.status === 0){
-                            getAllGoods()
-                            app.dialogFormVisible_table_goods = false
-                            app.$message.success(ret.reason);
-                        }
-                    })
-                }else{
-                    console.log('添加商品:',select_goods.id)
-                    // select_goods.gSubCid = app.goods_sub_category[0].id
-                    // if (select_goods.count === undefined)
-                    //     select_goods.count = 1
-                    H.rest('goods/insertGoods.do',this.select_goods,function (ret) {
-                        console.log(ret.reason)
-                    })
-                }
-
-            },
-            submit_select_user_form_dialog:function () {
-                const req = app.select_user;
-                H.rest('user/updateUserInfo.do',req,function (ret) {
-                    if (ret.status === 0){
-                        getAllUser()
-                        app.dialogFormVisible_table_user = false
-                    }else {
-                        app.$message.error(ret.reason);
-                    }
-                })
-            }
-        }
-    })
-
-    function updateUserInfo(form) {
-        H.rest('user/updateUserInfo.do',form,function (ret) {
-            if (ret.status === 0){
-                location.reload();
-            }else {
-                app.$message.error(ret.reason);
-            }
-        })
-    }
-
-    function getUserInfo(){
-        H.form('user/getUserInfo.do',null,function (ret) {
-            if (ret.status === 0)
-                app.session_user = ret.data;
-            else{
-                app.$message.error(ret.reason);
-                location.href = "/app/";
-            }
-
-        })
-    }
-    getUserInfo();
-
-    function getAllGoods(){
-        const req = {};
-        req.current_page = app.pagination.current_page;
-        H.form('goods/queryAllGoods.do',req,function (ret) {
-            app.goods = ret.data.goods;
-            app.srcGoods = ret.data.srcGoods;
-            app.pagination.total = ret.data.total;
-            app.pagination.page_count = ret.data.page_count;
-            app.pagination.page_size = ret.data.page_size;
-        })
-    }
-    getAllGoods();
-
-    function getAllSubCategory(){
-        const req = {}
-        req.gCid = app.select_goods.gCid;
-        H.form('goods/Subcategory.do',req,function (ret) {
-            app.goods_sub_category = ret.data;
-            app.select_goods.gSubCid = app.goods_sub_category[0].id;
-        })
-    }
-    getAllSubCategory();
-
-    function getAllUser() {
-        H.form('user/getAllUser.do',null,function (ret) {
-            app.users = ret.data;
-        })
-    }
-    getAllUser();
-
-
-
-</script>
+		function getAllUser() {
+			H.form('user/getAllUser.do', null, function(ret) {
+				app.users = ret.data;
+			})
+		}
+		getAllUser();
+	</script>
 </html>
