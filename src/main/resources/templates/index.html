@@ -215,31 +215,36 @@
 						<el-col :span="11">
 							<el-card class="box-card">
 							<!-- 走马灯 start -->
-							<div class="grid-content">
-								<template>
-									<el-carousel  indicator-position="outside">
-										<el-carousel-item v-for="item in urls" :key="item">
-											<el-image :src="item" fit="cover"></el-image>
-										</el-carousel-item>
-									</el-carousel>
-								</template>
-							</div>
+								<el-row type="flex" class="row-bg" justify="space-between">
+									<el-col>
+										<div class="grid-content">
+											<template>
+												<el-carousel  indicator-position="outside">
+													<el-carousel-item v-for="item in urls" :key="item">
+														<el-image :src="item" fit="cover"></el-image>
+													</el-carousel-item>
+												</el-carousel>
+											</template>
+										</div>
+									</el-col>
+								</el-row>
+
 							<!-- 走马灯 end -->
 							<!-- 仅展示商品图片 start -->
 							<el-row type="flex" class="row-bg" justify="space-between">
 								<el-col :span="8">
-									<img width="170" src="img/a.webp">
+									<img width="147" src="img/a.webp">
 								</el-col>
 								<el-col :span="8">
-									<img width="170" src="img/b.webp">
+									<img width="147" src="img/b.webp">
 								</el-col>
 								<el-col :span="8">
-									<img width="170" src="img/c.webp">
+									<img width="147" src="img/c.webp">
 								</el-col>
 							</el-row>
-							<el-row>
-								广告位招租
-							</el-row>
+<!--							<el-row>-->
+<!--								广告位招租-->
+<!--							</el-row>-->
 
 							<!-- 仅展示商品图片 end -->
 							</el-card>
@@ -315,7 +320,7 @@
 					<el-divider content-position="right">
 						<el-link href="https://element.eleme.io" target="_blank">更多</el-link>
 					</el-divider>
-					<el-row type="flex" class="row-bg" justify="space-between" style="flex-wrap: wrap;">
+					<el-row type="flex" class="row-bg" justify="space-start" style="flex-wrap: wrap;">
 						<template v-for="item in likeGoods">
 							<el-col style="margin: 20px 10px" :span="4">
 								<div class="grid-content">
