@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -75,21 +76,27 @@ public class PagePathController {
     public String goodsList(@RequestParam(name = "cat",defaultValue = "0") int cat,
                             @RequestParam(name = "page",defaultValue = "1")  int page,
                             Model model){
-        int total = goodsMapper.getGoodsCount();
-        int page_size = 50;
-        int page_count = total/page_size;
-        if (total % page_size != 0)page_count += 1;
 
-        if (page < 0)page = 0;
-        if (page > page_count)page = page_count;
+
+        int page_size = 50;
+        int total = 0;
+        List<Goods> goods = null;
         if (cat < 1000){
-            List<Goods> goods = goodsMapper.queryAllGoods(page_size*(page-1), page_size, 0,cat);
-            model.addAttribute("goods_list",goods);
-            model.addAttribute("current_page",page);
-            model.addAttribute("total",total);
-            return "list";
+            total = goodsMapper.queryAllGoods(-1, -1, null,cat).size();
+            int page_count = total/page_size;
+            if (total % page_size != 0)page_count += 1;
+            if (page < 0)page = 0;
+            if (page > page_count)page = page_count;
+            goods = goodsMapper.queryAllGoods(-1, -1, null,cat);
+        }else {
+            total = goodsMapper.queryAllGoods(-1, -1, cat,null).size();
+            int page_count = total/page_size;
+            if (total % page_size != 0)page_count += 1;
+            if (page < 0)page = 0;
+            if (page > page_count)page = page_count;
+            goods = goodsMapper.queryAllGoods(page_size*(page-1), 50, cat,null);
         }
-        List<Goods> goods = goodsMapper.queryAllGoods(page_size*(page-1), 50, cat,null);
+//        if (total == 0)return "index";
         model.addAttribute("goods_list",goods);
         model.addAttribute("current_page",page);
         model.addAttribute("total",total);

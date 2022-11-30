@@ -37,18 +37,15 @@
 
     <select id="queryAllGoods" resultMap="BaseResultMap">
         SELECT * FROM `ss_goods`
---         WHERE is_del >= 0
         <if test="cat != null">
-            where g_sub_cid = #{cat}
+            where g_sub_cid = #{cat} and is_del >= 0
         </if>
         <if test="cid != null">
-            where g_cid = #{cid}
+            where `g_cid`=#{cid} and is_del >= 0
         </if>
         <if test="start != -1 and end != -1">
             LIMIT #{start},#{end}
         </if>
-
-
     </select>
 
     <select id="getGoodsCount" resultType="int" >
