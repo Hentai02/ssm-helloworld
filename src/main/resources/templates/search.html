@@ -26,9 +26,9 @@
                                 <el-link th:href="${item.id} + '.html'" :underline="false">
                                     <el-card :body-style="{ padding: '0px' }">
                                         <img class="image" th:if="${item.cover} != 404"
-                                             th:src="'/data/goods/' + ${item.id} + '/cover/' + ${item.cover} + '.jpg'">
+                                             th:src="${item.cover}">
                                         <img class="image" th:if="${item.cover} == 404"
-                                             th:src="'/data/goods/' + ${item.cover} + '.jpg'">
+                                             th:src="${item.cover}">
                                         <div class="card-goods">
                                             <p th:text="${item.name}" class="card-goods-name"></p>
                                             <p th:text="${item.price}" class="card-goods-price"></p>

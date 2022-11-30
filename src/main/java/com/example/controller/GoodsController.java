@@ -289,7 +289,11 @@ public class GoodsController {
      * @return
      */
     @PostMapping("/goods/shopCartClear.do")
-    public BaseResponse goodsSettlement(@RequestBody List<ShopCart> req){
+    public BaseResponse goodsSettlement(@RequestBody List<ShopCart> req,HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if (user.getAddress().equals("") || user.getPhone().equals("")){
+            return BaseResponse.fail("请先添加收货地址与手机号！");
+        }
         for(ShopCart cart:req){
             shopCartMapper.updateByPrimaryKey(null,cart.getgId(),-1);
         }
@@ -311,7 +315,7 @@ public class GoodsController {
     }
 
     /**
-     * 删除长账单
+     * 删除账单
      * @param id
      * @return
      */

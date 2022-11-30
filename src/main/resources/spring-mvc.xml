@@ -32,6 +32,11 @@
         <property name="characterEncoding" value="UTF-8" />
     </bean>
 
+<!--    <jdbc:embedded-database id="dataSource" generate-name="true">-->
+<!--        <jdbc:script location="classpath:schema.sql"/>-->
+<!--        <jdbc:script location="classpath:test-data.sql"/>-->
+<!--    </jdbc:embedded-database>-->
+
     <!--  静态资源  -->
     <mvc:resources mapping="/js/**" location="/js/"/>
     <mvc:resources mapping="/css/**" location="/css/"/>
