@@ -142,13 +142,19 @@ public class FileUploadController {
     {
         logger.error("文件上传完成: " + info.realName + ", size=" + info.fileSize + ", tmpFile=" + info.tmpFile.getAbsolutePath());
         if (fieldName.equals("avatar")){
+            // 上传头像
             String dir = sc.getRealPath("/") + "data/user/";
             File destFile = new File(dir + info.tmpFile.getName());
             if (destFile.exists()){
                 FileUtils.delete(destFile);
             }
             FileUtils.copyFile(info.tmpFile,destFile);
-        }else{
+        } else if (fieldName.equals("undefined")) {
+            // 添加商品封面
+            return info;
+            
+        } else{
+
             String dir = sc.getRealPath("/") + "data/goods/" + fieldName + "/";
             new File(dir).mkdirs();
             File destFile = new File(dir + info.tmpFile.getName());

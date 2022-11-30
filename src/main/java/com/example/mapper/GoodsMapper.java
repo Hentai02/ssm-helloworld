@@ -13,7 +13,7 @@ public interface GoodsMapper {
 
     List<Goods> likeGoods();
 
-    List<Goods> queryAllGoods(@Param("start") int start,@Param("end") int end,@Param("cat") int cat,@Param("cid") Integer cid);
+    List<Goods> queryAllGoods(@Param("start") Integer start,@Param("end") Integer end,@Param("cat") Integer cat,@Param("cid") Integer cid);
 
     int getGoodsCount();
 

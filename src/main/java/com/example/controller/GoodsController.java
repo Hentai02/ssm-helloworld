@@ -41,7 +41,6 @@ public class GoodsController {
     @PostMapping("/goods/Subcategory.do")
     public BaseResponse querySubcategory(@RequestParam Integer gCid){
         List<GoodsSubcategory> goodsSubCategory = goodsSubCategoryMapper.querySubCategory(gCid);
-        logger.error(gCid);
         return BaseResponse.success(goodsSubCategoryMapper.querySubCategory(gCid));
     }
 
@@ -73,18 +72,16 @@ public class GoodsController {
      */
     @PostMapping("/goods/queryAllGoods.do")
     public BaseResponse queryAllGoods(@RequestParam int current_page){
-        int start = 0;
-        int end = 10;
         int total = goodsMapper.getGoodsCount();
         int page_size = 10;
-        int page_count = total/page_size+1;
-        if (current_page != 1){
-            start = end;
-            end = current_page * page_size;
-        }
+        int page_count = total/page_size;
+        if (total % page_size != 0)page_count += 1;
+
+        if (current_page < 0)current_page = 0;
+        if (current_page > page_count)current_page = page_count;
         JSONObject jsonObject = new JSONObject();
-        List<Goods> goods = goodsMapper.queryAllGoods(start,end,0,null);
-        List<Goods> srcGoods = goodsMapper.queryAllGoods(-1,-1,0,null);
+        List<Goods> goods = goodsMapper.queryAllGoods(page_size*(current_page-1),page_size,null,null);
+        List<Goods> srcGoods = goodsMapper.queryAllGoods(-1,-1,null,null);
         jsonObject.put("goods",goods);
         jsonObject.put("total",total);
         jsonObject.put("page_count",page_count);
@@ -200,6 +197,7 @@ public class GoodsController {
     @PostMapping("/goods/insertGoods.do")
     public BaseResponse insertGoods(HttpSession session,@RequestBody Goods goods){
         User sessionUser = (User) session.getAttribute("user");
+        UploadInfo uploadInfo = (UploadInfo) session.getAttribute("uploadInfo");
         goods.setView(1);
         goods.setUid(sessionUser.getId());
         goods.setIsDel(0);
@@ -209,7 +207,21 @@ public class GoodsController {
             goods.setCover("/app/data/goods/404");
         }
         int row = goodsMapper.insertGoods(goods);
-        logger.error(row);
+        if (row > 0){
+            if (uploadInfo != null){
+                String path = "/data/goods/";
+                File dir = uploadInfo.tmpFile.getParentFile().getParentFile();
+                File destDir = new File(dir,path + goods.getId());
+//                if (!destFile.exists())destFile.mkdirs();
+                try {
+                    FileUtils.moveFileToDirectory(uploadInfo.tmpFile,destDir,true);
+                    goods.setCover(path + goods.getId() + "/" + uploadInfo.tmpFileName);
+                    goodsMapper.updateGoodsInfo(goods);
+                } catch (IOException e) {
+                    return BaseResponse.error(e);
+                }
+            }
+        }
         return BaseResponse.success();
     }
 

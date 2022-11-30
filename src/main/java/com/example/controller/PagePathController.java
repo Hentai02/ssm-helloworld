@@ -75,29 +75,24 @@ public class PagePathController {
     public String goodsList(@RequestParam(name = "cat",defaultValue = "0") int cat,
                             @RequestParam(name = "page",defaultValue = "1")  int page,
                             Model model){
-        int page_size = 10;
         int total = goodsMapper.getGoodsCount();
-        int page_count = total/page_size+1;
-        int start = 0;
-        int end = page_size;
-        if (page != 1){
-            start = end;
-            end = page_size * page;
-        }
+        int page_size = 50;
+        int page_count = total/page_size;
+        if (total % page_size != 0)page_count += 1;
+
+        if (page < 0)page = 0;
+        if (page > page_count)page = page_count;
         if (cat < 1000){
-            List<Goods> goods = goodsMapper.queryAllGoods(start, end, 0,cat);
+            List<Goods> goods = goodsMapper.queryAllGoods(page_size*(page-1), page_size, 0,cat);
             model.addAttribute("goods_list",goods);
             model.addAttribute("current_page",page);
             model.addAttribute("total",total);
             return "list";
         }
-        List<Goods> goods = goodsMapper.queryAllGoods(start, end, cat,null);
+        List<Goods> goods = goodsMapper.queryAllGoods(page_size*(page-1), 50, cat,null);
         model.addAttribute("goods_list",goods);
         model.addAttribute("current_page",page);
         model.addAttribute("total",total);
-
-        logger.debug("总条目：" + total + ",总页数：" + page_count + ",开始：" + start + ",结束：" + end);
-        logger.debug("总条目：" + Arrays.toString(goods.toArray()));
         return "list";
     }
 

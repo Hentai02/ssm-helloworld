@@ -554,7 +554,8 @@
 				select_goods: {
 					gCid: 101,
 					count: 0,
-					gSubCid: 1001
+					gSubCid: 1001,
+					cover:''
 				},
 				// 用户管理选中的用户以及创建用户时的user
 				select_user: {},
@@ -809,6 +810,7 @@
 						// if (select_goods.count === undefined)
 						//     select_goods.count = 1
 						H.rest('goods/insertGoods.do', this.select_goods, function(ret) {
+							app.dialogFormVisible_table_goods = false
 							app.$message.success(ret.reason)
 						})
 					}

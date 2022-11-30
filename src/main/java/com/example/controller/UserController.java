@@ -53,6 +53,7 @@ public class UserController {
         user.setUpdateTime(new Date());
         user.setUpdateBy(username);
         userMapper.insert(user);
+        logger.info("用户" + user.getUsername() + "注册");
         return BaseResponse.success("注册成功！",201);
     }
 
@@ -73,6 +74,7 @@ public class UserController {
                 if (user.getIsDel() < 0)
                     return BaseResponse.fail("账号封禁中！");
                 session.setAttribute("user",user);
+                logger.info("用户" + user.getUsername() + "登录");
                 return BaseResponse.success("登录成功！",200);
             }else
                 return BaseResponse.fail("账号或密码错误!");
