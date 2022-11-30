@@ -71,7 +71,10 @@ public class GoodsController {
      * @return
      */
     @PostMapping("/goods/queryAllGoods.do")
-    public BaseResponse queryAllGoods(@RequestParam int current_page){
+    public BaseResponse queryAllGoods(@RequestParam(defaultValue = "1") int current_page,HttpSession session){
+        User user = (User) session.getAttribute("user");
+
+        if (user.getId() != 1) return BaseResponse.success();
         int total = goodsMapper.getGoodsCount();
         int page_size = 10;
         int page_count = total/page_size;
