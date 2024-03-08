@@ -7,10 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="b2c-ssm-hellowworld" />
+        <module name="b2c-ssm-helloworld" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="b2c-ssm-helloworld" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
